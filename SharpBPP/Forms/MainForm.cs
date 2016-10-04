@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Configuration;
 using System.Collections.Specialized;
+using SharpBPP.Entities;
+using SharpBPP.DataAccess;
 
 namespace SharpBPP.Forms
 {
@@ -16,6 +18,7 @@ namespace SharpBPP.Forms
     {
         private ConnectionStringSettingsCollection _connectionStrings;
         private NameValueCollection _appSettings;
+        private DataProcessor dataProcessor;
 
         public MainForm()
         {
@@ -23,9 +26,11 @@ namespace SharpBPP.Forms
 
             _connectionStrings = ConfigurationManager.ConnectionStrings;
             _appSettings = ConfigurationManager.AppSettings;
+
+            dataProcessor = new DataProcessor(_connectionStrings);
             
             AddLayers();
-        }
+        }        
 
         private void AddLayers()
         {
