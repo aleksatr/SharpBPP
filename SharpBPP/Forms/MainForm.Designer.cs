@@ -35,14 +35,14 @@
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
-            this.flowLayoutPanelLeftSide = new System.Windows.Forms.FlowLayoutPanel();
+            this.gbxLayers = new System.Windows.Forms.GroupBox();
+            this.treeViewLayers = new System.Windows.Forms.TreeView();
             this.mapBox = new SharpMap.Forms.MapBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButtonNone = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonPan = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.gbxLayers = new System.Windows.Forms.GroupBox();
-            this.treeViewLayers = new System.Windows.Forms.TreeView();
+            this.tableLayoutPanelLeft = new System.Windows.Forms.TableLayoutPanel();
             this.menuStrip.SuspendLayout();
             this.toolStripContainer.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
@@ -52,9 +52,9 @@
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
-            this.flowLayoutPanelLeftSide.SuspendLayout();
-            this.toolStrip1.SuspendLayout();
             this.gbxLayers.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
+            this.tableLayoutPanelLeft.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -122,27 +122,33 @@
             // 
             // splitContainer.Panel1
             // 
-            this.splitContainer.Panel1.Controls.Add(this.flowLayoutPanelLeftSide);
+            this.splitContainer.Panel1.Controls.Add(this.tableLayoutPanelLeft);
             // 
             // splitContainer.Panel2
             // 
             this.splitContainer.Panel2.Controls.Add(this.mapBox);
             this.splitContainer.Size = new System.Drawing.Size(1006, 644);
-            this.splitContainer.SplitterDistance = 147;
+            this.splitContainer.SplitterDistance = 217;
             this.splitContainer.TabIndex = 1;
             // 
-            // flowLayoutPanelLeftSide
+            // gbxLayers
             // 
-            this.flowLayoutPanelLeftSide.AutoScroll = true;
-            this.flowLayoutPanelLeftSide.AutoSize = true;
-            this.flowLayoutPanelLeftSide.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanelLeftSide.Controls.Add(this.gbxLayers);
-            this.flowLayoutPanelLeftSide.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanelLeftSide.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanelLeftSide.Location = new System.Drawing.Point(0, 0);
-            this.flowLayoutPanelLeftSide.Name = "flowLayoutPanelLeftSide";
-            this.flowLayoutPanelLeftSide.Size = new System.Drawing.Size(147, 644);
-            this.flowLayoutPanelLeftSide.TabIndex = 0;
+            this.gbxLayers.Controls.Add(this.treeViewLayers);
+            this.gbxLayers.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gbxLayers.Location = new System.Drawing.Point(3, 3);
+            this.gbxLayers.Name = "gbxLayers";
+            this.gbxLayers.Size = new System.Drawing.Size(211, 316);
+            this.gbxLayers.TabIndex = 0;
+            this.gbxLayers.TabStop = false;
+            this.gbxLayers.Text = "Layers";
+            // 
+            // treeViewLayers
+            // 
+            this.treeViewLayers.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeViewLayers.Location = new System.Drawing.Point(3, 18);
+            this.treeViewLayers.Name = "treeViewLayers";
+            this.treeViewLayers.Size = new System.Drawing.Size(205, 295);
+            this.treeViewLayers.TabIndex = 0;
             // 
             // mapBox
             // 
@@ -159,7 +165,7 @@
             this.mapBox.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(244)))), ((int)(((byte)(244)))), ((int)(((byte)(244)))));
             this.mapBox.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(244)))), ((int)(((byte)(244)))));
             this.mapBox.ShowProgressUpdate = false;
-            this.mapBox.Size = new System.Drawing.Size(855, 644);
+            this.mapBox.Size = new System.Drawing.Size(785, 644);
             this.mapBox.TabIndex = 0;
             this.mapBox.Text = "mapBox1";
             this.mapBox.WheelZoomMagnitude = -2D;
@@ -206,23 +212,19 @@
             this.toolStripButton1.Size = new System.Drawing.Size(24, 24);
             this.toolStripButton1.Text = "btnPostgreConnect";
             // 
-            // gbxLayers
+            // tableLayoutPanelLeft
             // 
-            this.gbxLayers.Controls.Add(this.treeViewLayers);
-            this.gbxLayers.Location = new System.Drawing.Point(3, 3);
-            this.gbxLayers.Name = "gbxLayers";
-            this.gbxLayers.Size = new System.Drawing.Size(141, 100);
-            this.gbxLayers.TabIndex = 0;
-            this.gbxLayers.TabStop = false;
-            this.gbxLayers.Text = "Layers";
-            // 
-            // treeViewLayers
-            // 
-            this.treeViewLayers.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeViewLayers.Location = new System.Drawing.Point(3, 18);
-            this.treeViewLayers.Name = "treeViewLayers";
-            this.treeViewLayers.Size = new System.Drawing.Size(135, 79);
-            this.treeViewLayers.TabIndex = 0;
+            this.tableLayoutPanelLeft.ColumnCount = 1;
+            this.tableLayoutPanelLeft.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelLeft.Controls.Add(this.gbxLayers, 0, 0);
+            this.tableLayoutPanelLeft.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanelLeft.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanelLeft.Name = "tableLayoutPanelLeft";
+            this.tableLayoutPanelLeft.RowCount = 2;
+            this.tableLayoutPanelLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanelLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanelLeft.Size = new System.Drawing.Size(217, 644);
+            this.tableLayoutPanelLeft.TabIndex = 0;
             // 
             // MainForm
             // 
@@ -245,14 +247,13 @@
             this.toolStripContainer.ResumeLayout(false);
             this.toolStripContainer.PerformLayout();
             this.splitContainer.Panel1.ResumeLayout(false);
-            this.splitContainer.Panel1.PerformLayout();
             this.splitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
-            this.flowLayoutPanelLeftSide.ResumeLayout(false);
+            this.gbxLayers.ResumeLayout(false);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
-            this.gbxLayers.ResumeLayout(false);
+            this.tableLayoutPanelLeft.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -270,9 +271,9 @@
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripButton toolStripButtonPan;
         private System.Windows.Forms.SplitContainer splitContainer;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelLeftSide;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.GroupBox gbxLayers;
         private System.Windows.Forms.TreeView treeViewLayers;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanelLeft;
     }
 }
