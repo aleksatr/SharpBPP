@@ -63,6 +63,9 @@ namespace SharpBPP.Forms
 
             mapBox.Map.BackgroundLayer.Add(dataProcessor.CreateBackgroundLayer());
 
+            //populate treeView
+            PopulateTreeView();
+
             //pan is selected by default
             mapBox.ActiveTool = SharpMap.Forms.MapBox.Tools.Pan;
         }
@@ -98,13 +101,62 @@ namespace SharpBPP.Forms
             {
                 List<LayerRecord> records = form.SelectedLayerRecords;
                 PopulateMap(dataProcessor.CreateLayers(records));
-                //ubaciti ovde u treeView
+                
+            }
+        }
+
+        private void PopulateTreeView()
+        {
+            TreeNode[] childNodes = new TreeNode[_layerCollection.Count];
+
+            //check or uncheck, depending on old values
+            for (int i = 0; i < childNodes.Length; ++i)
+            {
+                childNodes[i] = new TreeNode(_layerCollection[i].LayerName);
+                childNodes[i].Checked = true;
+            }
+
+            treeViewLayers.Nodes.Clear();
+            treeViewLayers.Nodes.AddRange(childNodes);
+        }
+
+        private void CheckAllChildNodes(TreeNode treeNode, bool nodeChecked)
+        {
+            foreach (TreeNode node in treeNode.Nodes)
+            {
+                node.Checked = nodeChecked;
+                if (node.Nodes.Count > 0)
+                {
+                    // If the current node has child nodes, call the CheckAllChildsNodes method recursively.
+                    this.CheckAllChildNodes(node, nodeChecked);
+                }
             }
         }
 
         ~MainForm()
         {
             FreeMap();
+        }
+
+        private void treeViewLayers_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            if (e.Action != TreeViewAction.Unknown)
+            {
+                //if (e.Node.Nodes.Count > 0)
+                //{
+                //    this.CheckAllChildNodes(e.Node, e.Node.Checked);
+                //}
+                if(e.Node.Checked)
+                {
+                    mapBox.Map.Layers.Add(_layerCollection.Where(l => l.LayerName == e.Node.Text).First());
+                }
+                else
+                {
+                    mapBox.Map.Layers.Remove(_layerCollection.Where(l => l.LayerName == e.Node.Text).First());
+                }
+
+                mapBox.Refresh();
+            }
         }
     }
 }

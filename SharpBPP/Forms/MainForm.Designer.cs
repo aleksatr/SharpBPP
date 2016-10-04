@@ -132,7 +132,7 @@
             // 
             this.splitContainer.Panel2.Controls.Add(this.mapBox);
             this.splitContainer.Size = new System.Drawing.Size(1005, 644);
-            this.splitContainer.SplitterDistance = 216;
+            this.splitContainer.SplitterDistance = 181;
             this.splitContainer.SplitterWidth = 5;
             this.splitContainer.TabIndex = 1;
             // 
@@ -148,7 +148,7 @@
             this.tableLayoutPanelLeft.RowCount = 2;
             this.tableLayoutPanelLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanelLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanelLeft.Size = new System.Drawing.Size(216, 644);
+            this.tableLayoutPanelLeft.Size = new System.Drawing.Size(181, 644);
             this.tableLayoutPanelLeft.TabIndex = 0;
             // 
             // gbxLayers
@@ -159,19 +159,23 @@
             this.gbxLayers.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.gbxLayers.Name = "gbxLayers";
             this.gbxLayers.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.gbxLayers.Size = new System.Drawing.Size(208, 314);
+            this.gbxLayers.Size = new System.Drawing.Size(173, 314);
             this.gbxLayers.TabIndex = 0;
             this.gbxLayers.TabStop = false;
             this.gbxLayers.Text = "Layers";
             // 
             // treeViewLayers
             // 
+            this.treeViewLayers.CheckBoxes = true;
             this.treeViewLayers.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeViewLayers.FullRowSelect = true;
             this.treeViewLayers.Location = new System.Drawing.Point(4, 19);
             this.treeViewLayers.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.treeViewLayers.Name = "treeViewLayers";
-            this.treeViewLayers.Size = new System.Drawing.Size(200, 291);
+            this.treeViewLayers.ShowNodeToolTips = true;
+            this.treeViewLayers.Size = new System.Drawing.Size(165, 291);
             this.treeViewLayers.TabIndex = 0;
+            this.treeViewLayers.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeViewLayers_AfterCheck);
             // 
             // mapBox
             // 
@@ -189,7 +193,7 @@
             this.mapBox.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(244)))), ((int)(((byte)(244)))), ((int)(((byte)(244)))));
             this.mapBox.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(244)))), ((int)(((byte)(244)))));
             this.mapBox.ShowProgressUpdate = false;
-            this.mapBox.Size = new System.Drawing.Size(784, 644);
+            this.mapBox.Size = new System.Drawing.Size(819, 644);
             this.mapBox.TabIndex = 0;
             this.mapBox.Text = "mapBox1";
             this.mapBox.WheelZoomMagnitude = -2D;
@@ -204,7 +208,7 @@
             this.btnPostgreConnect});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(240, 27);
+            this.toolStrip1.Size = new System.Drawing.Size(201, 27);
             this.toolStrip1.TabIndex = 0;
             // 
             // toolStripButtonNone
