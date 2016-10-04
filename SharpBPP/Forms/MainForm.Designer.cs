@@ -36,13 +36,13 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.flowLayoutPanelLeftSide = new System.Windows.Forms.FlowLayoutPanel();
+            this.gbxLayers = new System.Windows.Forms.GroupBox();
+            this.treeViewLayers = new System.Windows.Forms.TreeView();
             this.mapBox = new SharpMap.Forms.MapBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButtonNone = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonPan = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.gbxLayers = new System.Windows.Forms.GroupBox();
-            this.treeViewLayers = new System.Windows.Forms.TreeView();
+            this.btnPostgreConnect = new System.Windows.Forms.ToolStripButton();
             this.menuStrip.SuspendLayout();
             this.toolStripContainer.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
@@ -53,8 +53,8 @@
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
             this.flowLayoutPanelLeftSide.SuspendLayout();
-            this.toolStrip1.SuspendLayout();
             this.gbxLayers.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -64,7 +64,8 @@
             this.fileToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(1006, 28);
+            this.menuStrip.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
+            this.menuStrip.Size = new System.Drawing.Size(754, 24);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "menuStrip1";
             // 
@@ -73,13 +74,13 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(44, 24);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(108, 26);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -93,11 +94,13 @@
             // toolStripContainer.ContentPanel
             // 
             this.toolStripContainer.ContentPanel.Controls.Add(this.splitContainer);
-            this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1006, 644);
+            this.toolStripContainer.ContentPanel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(754, 513);
             this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.toolStripContainer.Location = new System.Drawing.Point(0, 28);
+            this.toolStripContainer.Location = new System.Drawing.Point(0, 24);
+            this.toolStripContainer.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.toolStripContainer.Name = "toolStripContainer";
-            this.toolStripContainer.Size = new System.Drawing.Size(1006, 693);
+            this.toolStripContainer.Size = new System.Drawing.Size(754, 562);
             this.toolStripContainer.TabIndex = 1;
             this.toolStripContainer.Text = "toolStripContainer1";
             // 
@@ -111,13 +114,14 @@
             this.statusStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip.Location = new System.Drawing.Point(0, 0);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(1006, 22);
+            this.statusStrip.Size = new System.Drawing.Size(754, 22);
             this.statusStrip.TabIndex = 0;
             // 
             // splitContainer
             // 
             this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.splitContainer.Name = "splitContainer";
             // 
             // splitContainer.Panel1
@@ -127,8 +131,9 @@
             // splitContainer.Panel2
             // 
             this.splitContainer.Panel2.Controls.Add(this.mapBox);
-            this.splitContainer.Size = new System.Drawing.Size(1006, 644);
-            this.splitContainer.SplitterDistance = 147;
+            this.splitContainer.Size = new System.Drawing.Size(754, 513);
+            this.splitContainer.SplitterDistance = 180;
+            this.splitContainer.SplitterWidth = 3;
             this.splitContainer.TabIndex = 1;
             // 
             // flowLayoutPanelLeftSide
@@ -140,9 +145,31 @@
             this.flowLayoutPanelLeftSide.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanelLeftSide.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanelLeftSide.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanelLeftSide.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.flowLayoutPanelLeftSide.Name = "flowLayoutPanelLeftSide";
-            this.flowLayoutPanelLeftSide.Size = new System.Drawing.Size(147, 644);
+            this.flowLayoutPanelLeftSide.Size = new System.Drawing.Size(180, 513);
             this.flowLayoutPanelLeftSide.TabIndex = 0;
+            // 
+            // gbxLayers
+            // 
+            this.gbxLayers.Controls.Add(this.treeViewLayers);
+            this.gbxLayers.Location = new System.Drawing.Point(2, 2);
+            this.gbxLayers.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.gbxLayers.Name = "gbxLayers";
+            this.gbxLayers.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.gbxLayers.Size = new System.Drawing.Size(106, 81);
+            this.gbxLayers.TabIndex = 0;
+            this.gbxLayers.TabStop = false;
+            this.gbxLayers.Text = "Layers";
+            // 
+            // treeViewLayers
+            // 
+            this.treeViewLayers.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeViewLayers.Location = new System.Drawing.Point(2, 15);
+            this.treeViewLayers.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.treeViewLayers.Name = "treeViewLayers";
+            this.treeViewLayers.Size = new System.Drawing.Size(102, 64);
+            this.treeViewLayers.TabIndex = 0;
             // 
             // mapBox
             // 
@@ -153,13 +180,14 @@
             this.mapBox.FineZoomFactor = 10D;
             this.mapBox.Location = new System.Drawing.Point(0, 0);
             this.mapBox.MapQueryMode = SharpMap.Forms.MapBox.MapQueryType.LayerByIndex;
+            this.mapBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.mapBox.Name = "mapBox";
             this.mapBox.QueryGrowFactor = 5F;
             this.mapBox.QueryLayerIndex = 0;
             this.mapBox.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(244)))), ((int)(((byte)(244)))), ((int)(((byte)(244)))));
             this.mapBox.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(244)))), ((int)(((byte)(244)))));
             this.mapBox.ShowProgressUpdate = false;
-            this.mapBox.Size = new System.Drawing.Size(855, 644);
+            this.mapBox.Size = new System.Drawing.Size(571, 513);
             this.mapBox.TabIndex = 0;
             this.mapBox.Text = "mapBox1";
             this.mapBox.WheelZoomMagnitude = -2D;
@@ -171,10 +199,10 @@
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonNone,
             this.toolStripButtonPan,
-            this.toolStripButton1});
+            this.btnPostgreConnect});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(84, 27);
+            this.toolStrip1.Size = new System.Drawing.Size(115, 27);
             this.toolStrip1.TabIndex = 0;
             // 
             // toolStripButtonNone
@@ -197,41 +225,25 @@
             this.toolStripButtonPan.Text = "Pan";
             this.toolStripButtonPan.Click += new System.EventHandler(this.toolStripButtonPan_Click);
             // 
-            // toolStripButton1
+            // btnPostgreConnect
             // 
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(24, 24);
-            this.toolStripButton1.Text = "btnPostgreConnect";
-            // 
-            // gbxLayers
-            // 
-            this.gbxLayers.Controls.Add(this.treeViewLayers);
-            this.gbxLayers.Location = new System.Drawing.Point(3, 3);
-            this.gbxLayers.Name = "gbxLayers";
-            this.gbxLayers.Size = new System.Drawing.Size(141, 100);
-            this.gbxLayers.TabIndex = 0;
-            this.gbxLayers.TabStop = false;
-            this.gbxLayers.Text = "Layers";
-            // 
-            // treeViewLayers
-            // 
-            this.treeViewLayers.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeViewLayers.Location = new System.Drawing.Point(3, 18);
-            this.treeViewLayers.Name = "treeViewLayers";
-            this.treeViewLayers.Size = new System.Drawing.Size(135, 79);
-            this.treeViewLayers.TabIndex = 0;
+            this.btnPostgreConnect.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnPostgreConnect.Image = ((System.Drawing.Image)(resources.GetObject("btnPostgreConnect.Image")));
+            this.btnPostgreConnect.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnPostgreConnect.Name = "btnPostgreConnect";
+            this.btnPostgreConnect.Size = new System.Drawing.Size(24, 24);
+            this.btnPostgreConnect.Text = "btnPostgreConnect";
+            this.btnPostgreConnect.Click += new System.EventHandler(this.btnPostgreConnect_Click);
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1006, 721);
+            this.ClientSize = new System.Drawing.Size(754, 586);
             this.Controls.Add(this.toolStripContainer);
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "MainForm";
             this.Text = "SharpBPP";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
@@ -250,9 +262,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
             this.flowLayoutPanelLeftSide.ResumeLayout(false);
+            this.gbxLayers.ResumeLayout(false);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
-            this.gbxLayers.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -271,7 +283,7 @@
         private System.Windows.Forms.ToolStripButton toolStripButtonPan;
         private System.Windows.Forms.SplitContainer splitContainer;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelLeftSide;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripButton btnPostgreConnect;
         private System.Windows.Forms.GroupBox gbxLayers;
         private System.Windows.Forms.TreeView treeViewLayers;
     }
