@@ -21,20 +21,23 @@ namespace SharpBPP.DataAccess
 
         public List<LayerRecord> GetAllLayers()
         {
-            NpgsqlConnection conn = new NpgsqlConnection(connectionStrings["PostgreSQL"].ConnectionString);
-            conn.Open();
-
-            NpgsqlCommand command = new NpgsqlCommand("select * from geometry_columns where f_table_schema = 'public';", conn);
-
-            NpgsqlDataReader reader = command.ExecuteReader();
-            List<LayerRecord> layers = new List<LayerRecord>();
-            while (reader.Read())
+            List<LayerRecord> layers;
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionStrings["PostgreSQL"].ConnectionString))
             {
-                layers.Add(new LayerRecord(reader[1].ToString(), reader[2].ToString(),
-                    reader[3].ToString(), (int)reader[4], (int)reader[5], reader[6].ToString()));
-            }
+                conn.Open();
 
-            conn.Dispose();
+                using (NpgsqlCommand command = new NpgsqlCommand("select * from geometry_columns where f_table_schema = 'public';", conn))
+                {
+
+                    NpgsqlDataReader reader = command.ExecuteReader();
+                    layers = new List<LayerRecord>();
+                    while (reader.Read())
+                    {
+                        layers.Add(new LayerRecord(reader[1].ToString(), reader[2].ToString(),
+                            reader[3].ToString(), (int)reader[4], (int)reader[5], reader[6].ToString()));
+                    }
+                }
+            }
 
             return layers;
         }
