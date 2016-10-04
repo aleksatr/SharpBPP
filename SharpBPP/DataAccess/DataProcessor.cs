@@ -62,5 +62,21 @@ namespace SharpBPP.DataAccess
             
             return tmpLayerCollection;
         }
+
+        public LayerCollection CreateLayers(List<LayerRecord> records)
+        {
+            LayerCollection tmpLayerCollection = new LayerCollection();
+
+            foreach (LayerRecord record in records)
+            {
+                VectorLayer layer = new VectorLayer(record.TableName);
+                layer.DataSource = new SharpMap.Data.Providers.PostGIS(
+                connectionStrings["PostgreSQL"].ConnectionString, record.TableName, "gid");
+                tmpLayerCollection.Add(layer);
+
+            }
+
+            return tmpLayerCollection;
+        }
     }
 }

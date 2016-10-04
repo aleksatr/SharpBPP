@@ -33,12 +33,19 @@ namespace SharpBPP.Forms
             PopulateMap();
         }        
 
-        private void PopulateMap()
+        private void PopulateMap(LayerCollection layersToUse = null)
         {
+            mapBox.Map.Layers.Clear();
+            mapBox.Map.BackgroundLayer.Clear();
+
             if (_layerCollection != null && _layerCollection.Count > 0)
                 FreeMap();
 
-            _layerCollection = dataProcessor.CreateLayers();
+            if (layersToUse == null)
+                _layerCollection = dataProcessor.CreateLayers();
+            else
+                _layerCollection = layersToUse;
+            
             mapBox.Map.Layers.AddCollection(_layerCollection);
 
             ProjNet.CoordinateSystems.Transformations.CoordinateTransformationFactory ctFact = new ProjNet.CoordinateSystems.Transformations.CoordinateTransformationFactory();
@@ -49,7 +56,8 @@ namespace SharpBPP.Forms
                 layer.ReverseCoordinateTransformation = ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);
             }
             
-            mapBox.Map.ZoomToExtents();
+            if(_layerCollection.Count > 0)
+                mapBox.Map.ZoomToExtents();
 
             mapBox.Refresh();
 
@@ -89,7 +97,7 @@ namespace SharpBPP.Forms
             if (form.ShowDialog() == DialogResult.OK)
             {
                 List<LayerRecord> records = form.SelectedLayerRecords;
-
+                PopulateMap(dataProcessor.CreateLayers(records));
                 //ubaciti ovde u treeView
             }
         }
