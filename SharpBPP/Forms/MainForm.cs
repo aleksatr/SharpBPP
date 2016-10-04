@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Configuration;
 using System.Collections.Specialized;
+using SharpMap.Layers;
 
 namespace SharpBPP.Forms
 {
@@ -16,52 +17,70 @@ namespace SharpBPP.Forms
     {
         private ConnectionStringSettingsCollection _connectionStrings;
         private NameValueCollection _appSettings;
+        private LayerCollection _layerCollection = new LayerCollection();
 
         public MainForm()
         {
             InitializeComponent();
-
             _connectionStrings = ConfigurationManager.ConnectionStrings;
             _appSettings = ConfigurationManager.AppSettings;
-            
-            AddLayers();
+
+            PopulateMap();
         }
 
-        private void AddLayers()
+        private void PopulateMap()
         {
-            SharpMap.Layers.VectorLayer zone = new SharpMap.Layers.VectorLayer("Zone");
-            SharpMap.Layers.VectorLayer linije = new SharpMap.Layers.VectorLayer("Linije");
-            SharpMap.Layers.VectorLayer stanice = new SharpMap.Layers.VectorLayer("Stanice");
+            if (_layerCollection != null && _layerCollection.Count > 0)
+                FreeMap();
+
+            _layerCollection = CreateLayers();
+            mapBox.Map.Layers.AddCollection(_layerCollection);
+
+            ProjNet.CoordinateSystems.Transformations.CoordinateTransformationFactory ctFact = new ProjNet.CoordinateSystems.Transformations.CoordinateTransformationFactory();
+
+            foreach(VectorLayer layer in _layerCollection)
+            {
+                layer.CoordinateTransformation = ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84, ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator);
+                layer.ReverseCoordinateTransformation = ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);
+            }
+            
+            mapBox.Map.ZoomToExtents();
+
+            mapBox.Refresh();
+
+            mapBox.Map.BackgroundLayer.Add(CreateBackgroundLayer());
+
+            //pan is selected by default
+            mapBox.ActiveTool = SharpMap.Forms.MapBox.Tools.Pan;
+        }
+
+        private ILayer CreateBackgroundLayer()
+        {
+            return new TileAsyncLayer(new BruTile.Web.OsmTileSource(), "OSM");
+        }
+
+        private LayerCollection CreateLayers()
+        {
+            LayerCollection tmpLayerCollection = new LayerCollection();
+
+            VectorLayer zone = new VectorLayer("Zone");
+            VectorLayer linije = new VectorLayer("Linije");
+            VectorLayer stanice = new VectorLayer("Stanice");
 
             zone.DataSource = new SharpMap.Data.Providers.PostGIS(
                 _connectionStrings["PostgreSQL"].ConnectionString, "zone", "gid");
-
+            
             linije.DataSource = new SharpMap.Data.Providers.PostGIS(
                 _connectionStrings["PostgreSQL"].ConnectionString, "linije", "gid");
 
             stanice.DataSource = new SharpMap.Data.Providers.PostGIS(
                 _connectionStrings["PostgreSQL"].ConnectionString, "stanice", "gid");
-            
-            
-            mapBox.Map.Layers.Add(zone);
-            mapBox.Map.Layers.Add(linije);
-            mapBox.Map.Layers.Add(stanice);
 
-            ProjNet.CoordinateSystems.Transformations.CoordinateTransformationFactory ctFact = new ProjNet.CoordinateSystems.Transformations.CoordinateTransformationFactory();
-            zone.CoordinateTransformation = ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84, ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator);
-            zone.ReverseCoordinateTransformation = ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);
-            linije.CoordinateTransformation = ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84, ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator);
-            linije.ReverseCoordinateTransformation = ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);
-            stanice.CoordinateTransformation = ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84, ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator);
-            stanice.ReverseCoordinateTransformation = ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);
+            tmpLayerCollection.Add(zone);
+            tmpLayerCollection.Add(linije);
+            tmpLayerCollection.Add(stanice);
 
-            mapBox.Map.ZoomToExtents();
-            mapBox.Refresh();
-
-            mapBox.Map.BackgroundLayer.Add(new SharpMap.Layers.TileAsyncLayer(new BruTile.Web.OsmTileSource(), "OSM"));
-            
-            //pan is selected by default
-            mapBox.ActiveTool = SharpMap.Forms.MapBox.Tools.Pan;
+            return tmpLayerCollection;
         }
 
         private void toolStripButtonNone_ButtonClick(object sender, EventArgs e)
@@ -78,6 +97,20 @@ namespace SharpBPP.Forms
         {
             this.DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+        private void FreeMap()
+        {
+            foreach (VectorLayer layer in _layerCollection)
+            {
+                if (layer != null && !layer.IsDisposed)
+                    layer.Dispose();
+            }
+        }
+
+        ~MainForm()
+        {
+            FreeMap();
         }
     }
 }
