@@ -8,15 +8,22 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Configuration;
+using System.Collections.Specialized;
 
 namespace SharpBPP.Forms
 {
     public partial class MainForm : Form
     {
+        private ConnectionStringSettingsCollection _connectionStrings;
+        private NameValueCollection _appSettings;
+
         public MainForm()
         {
             InitializeComponent();
 
+            _connectionStrings = ConfigurationManager.ConnectionStrings;
+            _appSettings = ConfigurationManager.AppSettings;
+            
             AddLayers();
         }
 
@@ -27,13 +34,13 @@ namespace SharpBPP.Forms
             SharpMap.Layers.VectorLayer stanice = new SharpMap.Layers.VectorLayer("Stanice");
 
             zone.DataSource = new SharpMap.Data.Providers.PostGIS(
-                ConfigurationManager.ConnectionStrings["PostgreSQL"].ConnectionString, "zone", "gid");
+                _connectionStrings["PostgreSQL"].ConnectionString, "zone", "gid");
 
             linije.DataSource = new SharpMap.Data.Providers.PostGIS(
-                ConfigurationManager.ConnectionStrings["PostgreSQL"].ConnectionString, "linije", "gid");
+                _connectionStrings["PostgreSQL"].ConnectionString, "linije", "gid");
 
             stanice.DataSource = new SharpMap.Data.Providers.PostGIS(
-                ConfigurationManager.ConnectionStrings["PostgreSQL"].ConnectionString, "stanice", "gid");
+                _connectionStrings["PostgreSQL"].ConnectionString, "stanice", "gid");
             
             
             mapBox.Map.Layers.Add(zone);
