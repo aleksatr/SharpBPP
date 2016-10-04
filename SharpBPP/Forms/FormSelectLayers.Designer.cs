@@ -42,6 +42,7 @@
             // 
             // dataGridView
             // 
+            this.dataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Schema,
@@ -94,7 +95,7 @@
             // 
             // GeometryColumn
             // 
-            this.GeometryColumn.DataPropertyName = "GeometryColumn";
+            this.GeometryColumn.DataPropertyName = "GeometryColumnName";
             this.GeometryColumn.HeaderText = "Geometry Column";
             this.GeometryColumn.Name = "GeometryColumn";
             this.GeometryColumn.ReadOnly = true;
@@ -108,13 +109,16 @@
             // 
             // SRID
             // 
+            this.SRID.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.SRID.DataPropertyName = "SRID";
             this.SRID.HeaderText = "SRID";
             this.SRID.Name = "SRID";
             this.SRID.ReadOnly = true;
+            this.SRID.Width = 58;
             // 
             // Type
             // 
+            this.Type.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.Type.DataPropertyName = "Type";
             this.Type.HeaderText = "Type";
             this.Type.Name = "Type";
@@ -124,10 +128,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(641, 265);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.dataGridView);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormSelectLayers";
