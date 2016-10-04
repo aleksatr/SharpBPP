@@ -19,7 +19,7 @@ namespace SharpBPP.DataAccess
             this.connectionStrings = ConfigurationManager.ConnectionStrings;
         }
 
-        private List<LayerRecord> GetAllLayers()
+        public List<LayerRecord> GetAllLayers()
         {
             List<LayerRecord> layers;
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionStrings["PostgreSQL"].ConnectionString))

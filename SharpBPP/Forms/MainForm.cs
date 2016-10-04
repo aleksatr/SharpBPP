@@ -83,6 +83,16 @@ namespace SharpBPP.Forms
                     layer.Dispose();
             }
         }
+        private void btnPostgreConnect_Click(object sender, EventArgs e)
+        {
+            FormSelectLayers form = new FormSelectLayers(dataProcessor.GetAllLayers());
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                List<LayerRecord> records = form.SelectedLayerRecords;
+
+                //ubaciti ovde u treeView
+            }
+        }
 
         ~MainForm()
         {
