@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using System.Configuration;
 using System.Collections.Specialized;
 using SharpMap.Layers;
+using SharpBPP.Entities;
+using SharpBPP.DataAccess;
 
 namespace SharpBPP.Forms
 {
@@ -18,22 +20,25 @@ namespace SharpBPP.Forms
         private ConnectionStringSettingsCollection _connectionStrings;
         private NameValueCollection _appSettings;
         private LayerCollection _layerCollection = new LayerCollection();
+        private DataProcessor dataProcessor;
 
         public MainForm()
         {
             InitializeComponent();
             _connectionStrings = ConfigurationManager.ConnectionStrings;
             _appSettings = ConfigurationManager.AppSettings;
+            
+            dataProcessor = new DataProcessor();
 
             PopulateMap();
-        }
+        }        
 
         private void PopulateMap()
         {
             if (_layerCollection != null && _layerCollection.Count > 0)
                 FreeMap();
 
-            _layerCollection = CreateLayers();
+            _layerCollection = dataProcessor.CreateLayers();
             mapBox.Map.Layers.AddCollection(_layerCollection);
 
             ProjNet.CoordinateSystems.Transformations.CoordinateTransformationFactory ctFact = new ProjNet.CoordinateSystems.Transformations.CoordinateTransformationFactory();
@@ -48,39 +53,10 @@ namespace SharpBPP.Forms
 
             mapBox.Refresh();
 
-            mapBox.Map.BackgroundLayer.Add(CreateBackgroundLayer());
+            mapBox.Map.BackgroundLayer.Add(dataProcessor.CreateBackgroundLayer());
 
             //pan is selected by default
             mapBox.ActiveTool = SharpMap.Forms.MapBox.Tools.Pan;
-        }
-
-        private ILayer CreateBackgroundLayer()
-        {
-            return new TileAsyncLayer(new BruTile.Web.OsmTileSource(), "OSM");
-        }
-
-        private LayerCollection CreateLayers()
-        {
-            LayerCollection tmpLayerCollection = new LayerCollection();
-
-            VectorLayer zone = new VectorLayer("Zone");
-            VectorLayer linije = new VectorLayer("Linije");
-            VectorLayer stanice = new VectorLayer("Stanice");
-
-            zone.DataSource = new SharpMap.Data.Providers.PostGIS(
-                _connectionStrings["PostgreSQL"].ConnectionString, "zone", "gid");
-            
-            linije.DataSource = new SharpMap.Data.Providers.PostGIS(
-                _connectionStrings["PostgreSQL"].ConnectionString, "linije", "gid");
-
-            stanice.DataSource = new SharpMap.Data.Providers.PostGIS(
-                _connectionStrings["PostgreSQL"].ConnectionString, "stanice", "gid");
-
-            tmpLayerCollection.Add(zone);
-            tmpLayerCollection.Add(linije);
-            tmpLayerCollection.Add(stanice);
-
-            return tmpLayerCollection;
         }
 
         private void toolStripButtonNone_ButtonClick(object sender, EventArgs e)
