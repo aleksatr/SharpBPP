@@ -157,6 +157,7 @@ namespace SharpBPP.Forms
                 if (e.Node.Parent != null)
                 {
                     //handle child nodes click
+                    ApplyFilter(e.Node);
                 }
                 else if (e.Node.Checked) //root nodes click (layer on/off)
                 {
@@ -178,8 +179,57 @@ namespace SharpBPP.Forms
                 }
 
                 mapBox.Refresh();
-                mapBox.Invalidate() ;
+                mapBox.Invalidate();
             }
+        }
+
+        private void ApplyFilter(TreeNode node)
+        {
+            VectorLayer layerToFilter = (VectorLayer)_layerCollection.Where(l => l.LayerName == node.Parent.Text).FirstOrDefault();
+            SharpMap.Data.Providers.PostGIS postgisProvider = (SharpMap.Data.Providers.PostGIS)layerToFilter.DataSource;
+
+            //string currentQuery = postgisProvider.DefinitionQuery;
+
+            //if (node.Checked)
+            //{
+            //    if (string.IsNullOrWhiteSpace(currentQuery))
+            //    {
+            //        currentQuery = node.Parent.Tag.ToString() + " = '" + node.Text + "'";
+            //    }
+            //    else
+            //    {
+            //        currentQuery += " OR " + node.Parent.Tag.ToString() + " = '" + node.Text + "'";
+            //    }
+            //}
+            //else
+            //{
+            //    currentQuery = currentQuery.Replace("OR " + node.Parent.Tag.ToString() + " = '" + node.Text + "'", "");
+            //    currentQuery = currentQuery.Replace(node.Parent.Tag.ToString() + " = '" + node.Text + "'", "");
+            //}
+
+            //postgisProvider.DefinitionQuery = currentQuery;
+
+            StringBuilder sb = new StringBuilder();
+            List<TreeNode> checkedNodes = node.Parent.Nodes.Cast<TreeNode>().Where(c => c.Checked).ToList();
+
+            if(checkedNodes.Count == 0)
+            {
+                sb.Append("true = false");
+            }
+            else if(checkedNodes.Count == 1)
+            {
+                sb.Append(node.Parent.Tag.ToString() + " = '" + node.Text + "'");
+            }
+            else
+            {
+                sb.Append(node.Parent.Tag.ToString() + " in ('");
+                sb.Append(string.Join("', '", checkedNodes.Select(n => n.Text).ToArray()));
+                sb.Append("')");
+            }
+
+            postgisProvider.DefinitionQuery = sb.ToString();
+
+            mapBox.Refresh();
         }
 
         private void btnLabels_Click(object sender, EventArgs e)
@@ -187,7 +237,7 @@ namespace SharpBPP.Forms
             List<string> layerAttributes;
             if (treeViewLayers.SelectedNode != null && treeViewLayers.SelectedNode.Parent == null)
             {
-                if(treeViewLayers.SelectedNode.Checked)
+                if (treeViewLayers.SelectedNode.Checked)
                 {
                     layerAttributes = dataProcessor.GetAllLayerAttributes(treeViewLayers.SelectedNode.Text);
                     layerAttributes.Insert(0, "None");
@@ -336,6 +386,62 @@ namespace SharpBPP.Forms
             if (styleChooser.CustomImage != null)
             {
                 layer.Style.Symbol = styleChooser.CustomImage;
+            }
+        }
+
+        private void btnCreateSubnodes_Click(object sender, EventArgs e)
+        {
+            List<string> layerAttributes;
+            TreeNode node = treeViewLayers.SelectedNode;
+
+            if (node != null && node.Parent == null)
+            {
+                if (node.Checked)
+                {
+                    layerAttributes = dataProcessor.GetAllLayerAttributes(node.Text);
+                    layerAttributes.Insert(0, "None");
+                    string selectedAttribute = MainFormHelper.DialogCombo("Subcategories", "Select category:", layerAttributes);
+
+                    if (selectedAttribute != null)
+                    {
+                        node.Nodes.Clear();
+
+                        if (selectedAttribute != "None")
+                        {
+                            List<object> distinctCategories = dataProcessor.GetAllDistinctValues(node.Text, selectedAttribute);
+
+                            TreeNode[] childNodes = new TreeNode[distinctCategories.Count];
+
+                            for (int i = 0; i < childNodes.Length; ++i)
+                            {
+                                childNodes[i] = new TreeNode(distinctCategories[i].ToString());
+                                childNodes[i].Tag = distinctCategories[i];
+                                childNodes[i].Checked = true;
+                            }
+
+                            node.Nodes.AddRange(childNodes);
+                            node.Tag = selectedAttribute;
+
+                            VectorLayer layerToExpand = (VectorLayer)_layerCollection.Where(l => l.LayerName == node.Text).FirstOrDefault();
+                            SharpMap.Data.Providers.PostGIS postgisProvider = layerToExpand.DataSource as SharpMap.Data.Providers.PostGIS;
+
+                            if (postgisProvider != null)
+                                postgisProvider.DefinitionQuery = "";
+
+
+                            node.Expand();
+                        }
+
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Check Layer in TreeView to create subcategories!");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select layer from TreeView!");
             }
         }
     }

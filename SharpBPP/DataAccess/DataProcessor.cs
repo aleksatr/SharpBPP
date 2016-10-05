@@ -21,6 +21,28 @@ namespace SharpBPP.DataAccess
             this.connectionStrings = ConfigurationManager.ConnectionStrings;
         }
 
+        public List<object> GetAllDistinctValues(string tableName, string columnName)
+        {
+            List<object> values;
+
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionStrings["PostgreSQL"].ConnectionString))
+            {
+                conn.Open();
+
+                using (NpgsqlCommand command = new NpgsqlCommand("select distinct " + columnName + " from " + tableName + ";", conn))
+                {
+                    NpgsqlDataReader reader = command.ExecuteReader();
+                    values = new List<object>();
+                    while (reader.Read())
+                    {
+                        values.Add(reader[0]);
+                    }
+                }
+            }
+
+            return values;
+        }
+
         public List<string> GetAllLayerAttributes(string layerName)
         {
             List<string> columnNames;
