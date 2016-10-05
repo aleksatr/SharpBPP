@@ -19,6 +19,29 @@ namespace SharpBPP.DataAccess
             this.connectionStrings = ConfigurationManager.ConnectionStrings;
         }
 
+        public List<string> GetAllLayerAttributes(string layerName)
+        {
+            List<string> columnNames;
+
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionStrings["PostgreSQL"].ConnectionString))
+            {
+                conn.Open();
+
+                using (NpgsqlCommand command = new NpgsqlCommand("select column_name from information_schema.columns where table_name='" + layerName + "';", conn))
+                {
+
+                    NpgsqlDataReader reader = command.ExecuteReader();
+                    columnNames = new List<string>();
+                    while (reader.Read())
+                    {
+                        columnNames.Add(reader[0].ToString());
+                    }
+                }
+            }
+
+            return columnNames;
+        }
+
         public List<LayerRecord> GetAllLayers()
         {
             List<LayerRecord> layers;
@@ -77,6 +100,22 @@ namespace SharpBPP.DataAccess
             }
 
             return tmpLayerCollection;
+        }
+
+        public LabelLayer CreateLabelLayer(VectorLayer vLayer, string labelColumn)
+        {
+            LabelLayer labelLayer = new LabelLayer(vLayer.LayerName + "_label");
+            labelLayer.DataSource = vLayer.DataSource;
+            labelLayer.LabelColumn = labelColumn;
+            labelLayer.Style.IsTextOnPath = false;
+            labelLayer.Style.Halo = new System.Drawing.Pen(System.Drawing.Color.White, 2.0f);
+            labelLayer.Style.CollisionDetection = true;
+            labelLayer.Style.CollisionBuffer = new System.Drawing.SizeF(30.0f, 30.0f);
+            labelLayer.Style.Font = new System.Drawing.Font(System.Drawing.FontFamily.GenericSansSerif, 11);
+            labelLayer.Style.HorizontalAlignment = SharpMap.Styles.LabelStyle.HorizontalAlignmentEnum.Center;
+            labelLayer.Style.VerticalAlignment = SharpMap.Styles.LabelStyle.VerticalAlignmentEnum.Top;
+
+            return labelLayer;
         }
     }
 }
