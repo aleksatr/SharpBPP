@@ -33,11 +33,11 @@ namespace SharpBPP.Forms
             InitializeComponent();
             _connectionStrings = ConfigurationManager.ConnectionStrings;
             _appSettings = ConfigurationManager.AppSettings;
-            
+
             dataProcessor = new DataProcessor();
 
             PopulateMap();
-        }        
+        }
 
         private void PopulateMap(LayerCollection layersToUse = null)
         {
@@ -51,7 +51,7 @@ namespace SharpBPP.Forms
                 _layerCollection = dataProcessor.CreateLayers();
             else
                 _layerCollection = layersToUse;
-            
+
             mapBox.Map.Layers.AddCollection(_layerCollection);
             mapBox.Map.Layers.AddCollection(_labelLayers);
 
@@ -66,14 +66,14 @@ namespace SharpBPP.Forms
                 label.CoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84, ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator);
                 label.ReverseCoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);
             }
-            
+
             if (_layerCollection.Count > 0)
                 mapBox.Map.ZoomToExtents();
 
             mapBox.Refresh();
 
             if (_showBackgroundLayer)
-            mapBox.Map.BackgroundLayer.Add(dataProcessor.CreateBackgroundLayer());
+                mapBox.Map.BackgroundLayer.Add(dataProcessor.CreateBackgroundLayer());
 
             //populate treeView
             PopulateTreeView();
@@ -119,7 +119,7 @@ namespace SharpBPP.Forms
             {
                 List<LayerRecord> records = form.SelectedLayerRecords;
                 PopulateMap(dataProcessor.CreateLayers(records));
-                
+
             }
         }
 
@@ -164,6 +164,7 @@ namespace SharpBPP.Forms
                 //{
                 //    this.CheckAllChildNodes(e.Node, e.Node.Checked);
                 //}
+                treeViewLayers.SelectedNode = e.Node;
                 if (e.Node.Parent != null)
                 {
                     //handle child nodes click
@@ -174,7 +175,7 @@ namespace SharpBPP.Forms
 
                     var layerLabel = _labelLayers.Where(l => l.LayerName == e.Node.Text + "_label").FirstOrDefault();
 
-                    if(layerLabel != null)
+                    if (layerLabel != null)
                         mapBox.Map.Layers.Add(layerLabel);
                 }
                 else
@@ -189,7 +190,7 @@ namespace SharpBPP.Forms
 
                 mapBox.Refresh();
             }
-                }
+        }
 
         private void btnLabels_Click(object sender, EventArgs e)
         {
@@ -209,21 +210,21 @@ namespace SharpBPP.Forms
                         mapBox.Map.Layers.Remove(existingLabel);
                         (existingLabel as LabelLayer).Dispose();
                     }
-                        
-                    if(selectedAttribute != "None")
+
+                    if (selectedAttribute != "None")
                     {
                         var newLabel = dataProcessor.CreateLabelLayer(_layerCollection.Where(l => l.LayerName == treeViewLayers.SelectedNode.Text).FirstOrDefault() as VectorLayer, selectedAttribute);
                         _labelLayers.Add(newLabel);
 
-                        if(mapBox.Map.Layers.Contains(_layerCollection.Where(l => l.LayerName == treeViewLayers.SelectedNode.Text).FirstOrDefault()))
+                        if (mapBox.Map.Layers.Contains(_layerCollection.Where(l => l.LayerName == treeViewLayers.SelectedNode.Text).FirstOrDefault()))
                             mapBox.Map.Layers.Add(newLabel);
 
                         newLabel.CoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84, ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator);
                         newLabel.ReverseCoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);
                     }
 
-                mapBox.Refresh();
-            }
+                    mapBox.Refresh();
+                }
             }
             else
             {
@@ -256,12 +257,12 @@ namespace SharpBPP.Forms
             if (layer != null)
             {
                 FormStyleChooser styleChooser;
-                
+
 
                 if (dataProcessor.Layers.ContainsKey(layer) && dataProcessor.Layers[layer].Type == "POINT")
                 {
                     styleChooser = new FormStyleChooser(layer.Style.Outline.Width, layer.Style.PointSize);
-                    if(styleChooser.ShowDialog() == DialogResult.OK)
+                    if (styleChooser.ShowDialog() == DialogResult.OK)
                         SetPointStyle(layer, styleChooser);
                 }
                 else
@@ -269,7 +270,7 @@ namespace SharpBPP.Forms
                     styleChooser = new FormStyleChooser(layer.Style.Outline.Width);
                     if (styleChooser.ShowDialog() == DialogResult.OK)
                         SetLineStyle(layer, styleChooser);
-                }              
+                }
                 mapBox.Refresh();
             }
         }

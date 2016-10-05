@@ -45,6 +45,7 @@
             this.btnPostgreConnect = new System.Windows.Forms.ToolStripButton();
             this.btnLabels = new System.Windows.Forms.ToolStripButton();
             this.btnToggleBackground = new System.Windows.Forms.ToolStripButton();
+            this.btnSetStyle = new System.Windows.Forms.ToolStripButton();
             this.menuStrip.SuspendLayout();
             this.toolStripContainer.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
