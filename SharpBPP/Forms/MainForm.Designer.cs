@@ -43,7 +43,8 @@
             this.toolStripButtonNone = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonPan = new System.Windows.Forms.ToolStripButton();
             this.btnPostgreConnect = new System.Windows.Forms.ToolStripButton();
-            this.btnSetStyle = new System.Windows.Forms.ToolStripButton();
+            this.btnLabels = new System.Windows.Forms.ToolStripButton();
+            this.btnToggleBackground = new System.Windows.Forms.ToolStripButton();
             this.menuStrip.SuspendLayout();
             this.toolStripContainer.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
@@ -143,6 +144,7 @@
             this.tableLayoutPanelLeft.Controls.Add(this.gbxLayers, 0, 0);
             this.tableLayoutPanelLeft.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanelLeft.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanelLeft.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanelLeft.Name = "tableLayoutPanelLeft";
             this.tableLayoutPanelLeft.RowCount = 2;
             this.tableLayoutPanelLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -154,9 +156,11 @@
             // 
             this.gbxLayers.Controls.Add(this.treeViewLayers);
             this.gbxLayers.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gbxLayers.Location = new System.Drawing.Point(3, 3);
+            this.gbxLayers.Location = new System.Drawing.Point(4, 4);
+            this.gbxLayers.Margin = new System.Windows.Forms.Padding(4);
             this.gbxLayers.Name = "gbxLayers";
-            this.gbxLayers.Size = new System.Drawing.Size(129, 251);
+            this.gbxLayers.Padding = new System.Windows.Forms.Padding(4);
+            this.gbxLayers.Size = new System.Drawing.Size(173, 314);
             this.gbxLayers.TabIndex = 0;
             this.gbxLayers.TabStop = false;
             this.gbxLayers.Text = "Layers";
@@ -166,7 +170,8 @@
             this.treeViewLayers.CheckBoxes = true;
             this.treeViewLayers.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeViewLayers.FullRowSelect = true;
-            this.treeViewLayers.Location = new System.Drawing.Point(3, 16);
+            this.treeViewLayers.Location = new System.Drawing.Point(4, 19);
+            this.treeViewLayers.Margin = new System.Windows.Forms.Padding(4);
             this.treeViewLayers.Name = "treeViewLayers";
             this.treeViewLayers.ShowNodeToolTips = true;
             this.treeViewLayers.Size = new System.Drawing.Size(123, 232);
@@ -202,7 +207,9 @@
             this.toolStripButtonNone,
             this.toolStripButtonPan,
             this.btnPostgreConnect,
-            this.btnSetStyle});
+            this.btnSetStyle,
+            this.btnLabels,
+            this.btnToggleBackground});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(284, 25);
@@ -237,6 +244,26 @@
             this.btnPostgreConnect.Size = new System.Drawing.Size(84, 22);
             this.btnPostgreConnect.Text = "PostGIS layers";
             this.btnPostgreConnect.Click += new System.EventHandler(this.btnPostgreConnect_Click);
+            // 
+            // btnLabels
+            // 
+            this.btnLabels.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.btnLabels.Image = ((System.Drawing.Image)(resources.GetObject("btnLabels.Image")));
+            this.btnLabels.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnLabels.Name = "btnLabels";
+            this.btnLabels.Size = new System.Drawing.Size(94, 24);
+            this.btnLabels.Text = "Layer Labels";
+            this.btnLabels.Click += new System.EventHandler(this.btnLabels_Click);
+            // 
+            // btnToggleBackground
+            // 
+            this.btnToggleBackground.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.btnToggleBackground.Image = ((System.Drawing.Image)(resources.GetObject("btnToggleBackground.Image")));
+            this.btnToggleBackground.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnToggleBackground.Name = "btnToggleBackground";
+            this.btnToggleBackground.Size = new System.Drawing.Size(142, 24);
+            this.btnToggleBackground.Text = "Toggle Background";
+            this.btnToggleBackground.Click += new System.EventHandler(this.btnToggleBackground_Click);
             // 
             // btnSetStyle
             // 
@@ -298,6 +325,8 @@
         private System.Windows.Forms.GroupBox gbxLayers;
         private System.Windows.Forms.TreeView treeViewLayers;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanelLeft;
+        private System.Windows.Forms.ToolStripButton btnLabels;
+        private System.Windows.Forms.ToolStripButton btnToggleBackground;
         private System.Windows.Forms.ToolStripButton btnSetStyle;
     }
 }
