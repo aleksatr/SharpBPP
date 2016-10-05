@@ -140,19 +140,6 @@ namespace SharpBPP.Forms
             treeViewLayers.Nodes.AddRange(childNodes);
         }
 
-        private void CheckAllChildNodes(TreeNode treeNode, bool nodeChecked)
-        {
-            foreach (TreeNode node in treeNode.Nodes)
-            {
-                node.Checked = nodeChecked;
-                if (node.Nodes.Count > 0)
-                {
-                    // If the current node has child nodes, call the CheckAllChildsNodes method recursively.
-                    this.CheckAllChildNodes(node, nodeChecked);
-                }
-            }
-        }
-
         ~MainForm()
         {
             FreeMap();
@@ -200,33 +187,39 @@ namespace SharpBPP.Forms
             List<string> layerAttributes;
             if (treeViewLayers.SelectedNode != null && treeViewLayers.SelectedNode.Parent == null)
             {
-                layerAttributes = dataProcessor.GetAllLayerAttributes(treeViewLayers.SelectedNode.Text);
-                layerAttributes.Insert(0, "None");
-                string selectedAttribute = MainFormHelper.DialogCombo("Labels", "Select Attribute:", layerAttributes);
-
-                if (selectedAttribute != null)
+                if(treeViewLayers.SelectedNode.Checked)
                 {
-                    var existingLabel = _labelLayers.Where(l => l.LayerName == treeViewLayers.SelectedNode.Text + "_label").FirstOrDefault();
-                    if (existingLabel != null)
+                    layerAttributes = dataProcessor.GetAllLayerAttributes(treeViewLayers.SelectedNode.Text);
+                    layerAttributes.Insert(0, "None");
+                    string selectedAttribute = MainFormHelper.DialogCombo("Labels", "Select Attribute:", layerAttributes);
+
+                    if (selectedAttribute != null)
                     {
-                        _labelLayers.Remove(existingLabel);
-                        mapBox.Map.Layers.Remove(existingLabel);
-                        (existingLabel as LabelLayer).Dispose();
+                        var existingLabel = _labelLayers.Where(l => l.LayerName == treeViewLayers.SelectedNode.Text + "_label").FirstOrDefault();
+                        if (existingLabel != null)
+                        {
+                            _labelLayers.Remove(existingLabel);
+                            mapBox.Map.Layers.Remove(existingLabel);
+                        }
+
+                        if (selectedAttribute != "None")
+                        {
+                            var newLabel = dataProcessor.CreateLabelLayer(_layerCollection.Where(l => l.LayerName == treeViewLayers.SelectedNode.Text).FirstOrDefault() as VectorLayer, selectedAttribute);
+                            _labelLayers.Add(newLabel);
+
+                            if (mapBox.Map.Layers.Contains(_layerCollection.Where(l => l.LayerName == treeViewLayers.SelectedNode.Text).FirstOrDefault()))
+                                mapBox.Map.Layers.Add(newLabel);
+
+                            newLabel.CoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84, ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator);
+                            newLabel.ReverseCoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);
+                        }
+
+                        mapBox.Refresh();
                     }
-
-                    if (selectedAttribute != "None")
-                    {
-                        var newLabel = dataProcessor.CreateLabelLayer(_layerCollection.Where(l => l.LayerName == treeViewLayers.SelectedNode.Text).FirstOrDefault() as VectorLayer, selectedAttribute);
-                        _labelLayers.Add(newLabel);
-
-                        if (mapBox.Map.Layers.Contains(_layerCollection.Where(l => l.LayerName == treeViewLayers.SelectedNode.Text).FirstOrDefault()))
-                            mapBox.Map.Layers.Add(newLabel);
-
-                        newLabel.CoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84, ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator);
-                        newLabel.ReverseCoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);
-                    }
-
-                    mapBox.Refresh();
+                }
+                else
+                {
+                    MessageBox.Show("Check Layer in TreeView to change label!");
                 }
             }
             else
