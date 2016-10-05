@@ -293,6 +293,13 @@ namespace SharpBPP.Forms
             if (styleChooser.CustomImage != null)
             {
                 layer.Style.Symbol = styleChooser.CustomImage;
+                int size = (int)styleChooser.PointSize;
+                Bitmap b = new Bitmap(size, size);
+                using (Graphics g = Graphics.FromImage((Image)b))
+                {
+                    g.DrawImage(styleChooser.CustomImage, 0, 0, size, size);
+                }
+                layer.Style.Symbol = b;
             }
         }
 
