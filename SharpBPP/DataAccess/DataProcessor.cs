@@ -13,9 +13,11 @@ namespace SharpBPP.DataAccess
     public class DataProcessor
     {
         private ConnectionStringSettingsCollection connectionStrings;
+        public Dictionary<VectorLayer, LayerRecord> Layers { get; set; }
         
         public DataProcessor()
         {
+            Layers = new Dictionary<VectorLayer, LayerRecord>();
             this.connectionStrings = ConfigurationManager.ConnectionStrings;
         }
 
@@ -50,14 +52,14 @@ namespace SharpBPP.DataAccess
         public LayerCollection CreateLayers()
         {
             LayerCollection tmpLayerCollection = new LayerCollection();
-
+            Layers.Clear();
             foreach(LayerRecord record in GetAllLayers())
             {
                 VectorLayer layer = new VectorLayer(record.TableName);
+                Layers.Add(layer, record);
                 layer.DataSource = new SharpMap.Data.Providers.PostGIS(
                 connectionStrings["PostgreSQL"].ConnectionString, record.TableName, "gid");
                 tmpLayerCollection.Add(layer);
-
             }
             
             return tmpLayerCollection;

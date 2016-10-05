@@ -27,11 +27,11 @@ namespace SharpBPP.Forms
             InitializeComponent();
             _connectionStrings = ConfigurationManager.ConnectionStrings;
             _appSettings = ConfigurationManager.AppSettings;
-            
+
             dataProcessor = new DataProcessor();
 
             PopulateMap();
-        }        
+        }
 
         private void PopulateMap(LayerCollection layersToUse = null)
         {
@@ -45,18 +45,18 @@ namespace SharpBPP.Forms
                 _layerCollection = dataProcessor.CreateLayers();
             else
                 _layerCollection = layersToUse;
-            
+
             mapBox.Map.Layers.AddCollection(_layerCollection);
 
             ProjNet.CoordinateSystems.Transformations.CoordinateTransformationFactory ctFact = new ProjNet.CoordinateSystems.Transformations.CoordinateTransformationFactory();
 
-            foreach(VectorLayer layer in _layerCollection)
+            foreach (VectorLayer layer in _layerCollection)
             {
                 layer.CoordinateTransformation = ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84, ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator);
                 layer.ReverseCoordinateTransformation = ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);
             }
-            
-            if(_layerCollection.Count > 0)
+
+            if (_layerCollection.Count > 0)
                 mapBox.Map.ZoomToExtents();
 
             mapBox.Refresh();
@@ -101,7 +101,7 @@ namespace SharpBPP.Forms
             {
                 List<LayerRecord> records = form.SelectedLayerRecords;
                 PopulateMap(dataProcessor.CreateLayers(records));
-                
+
             }
         }
 
@@ -146,7 +146,7 @@ namespace SharpBPP.Forms
                 //{
                 //    this.CheckAllChildNodes(e.Node, e.Node.Checked);
                 //}
-                if(e.Node.Checked)
+                if (e.Node.Checked)
                 {
                     mapBox.Map.Layers.Add(_layerCollection.Where(l => l.LayerName == e.Node.Text).First());
                 }
@@ -155,7 +155,100 @@ namespace SharpBPP.Forms
                     mapBox.Map.Layers.Remove(_layerCollection.Where(l => l.LayerName == e.Node.Text).First());
                 }
 
+                treeViewLayers.SelectedNode = e.Node;
+
                 mapBox.Refresh();
+            }
+        }
+
+        private void btnSetStyle_Click(object sender, EventArgs e)
+        {
+            if (treeViewLayers.SelectedNode == null)
+            {
+                MessageBox.Show("Please select layer.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            VectorLayer layer = mapBox.Map.Layers.Where(x => x.LayerName == treeViewLayers.SelectedNode.Text).FirstOrDefault() as VectorLayer;
+
+            if (layer != null)
+            {
+                FormStyleChooser styleChooser;
+                
+
+                if (dataProcessor.Layers.ContainsKey(layer) && dataProcessor.Layers[layer].Type == "POINT")
+                {
+                    styleChooser = new FormStyleChooser(layer.Style.Outline.Width, layer.Style.PointSize);
+                    if(styleChooser.ShowDialog() == DialogResult.OK)
+                        SetPointStyle(layer, styleChooser);
+                }
+                else
+                {
+                    styleChooser = new FormStyleChooser(layer.Style.Outline.Width);
+                    if (styleChooser.ShowDialog() == DialogResult.OK)
+                        SetLineStyle(layer, styleChooser);
+                }              
+                mapBox.Refresh();
+            }
+        }
+        private void SetPointStyle(VectorLayer layer, FormStyleChooser styleChooser)
+        {
+            if (styleChooser.FillColor.HasValue)
+            {
+                layer.Style.PointColor = new SolidBrush(styleChooser.FillColor.Value);
+            }
+            layer.Style.EnableOutline = true;
+            layer.Style.PointSize = styleChooser.PointSize;
+            if (styleChooser.CustomImage != null)
+            {
+                layer.Style.Symbol = styleChooser.CustomImage;
+            }
+            if (styleChooser.OutlineColor.HasValue)
+            {
+                layer.Style.EnableOutline = true;
+                layer.Style.Outline.Width = styleChooser.PenSize;
+                layer.Style.Outline.Color = styleChooser.OutlineColor.Value;
+            }
+
+            if (styleChooser.CustomImage != null)
+            {
+                layer.Style.Symbol = styleChooser.CustomImage;
+            }
+        }
+
+        private void SetLineStyle(VectorLayer layer, FormStyleChooser styleChooser)
+        {
+            if (styleChooser.FillColor.HasValue)
+            {
+                layer.Style.Line.Color = styleChooser.FillColor.Value;
+            }
+            layer.Style.EnableOutline = true;
+            layer.Style.Outline.Width = styleChooser.PenSize;
+            if (styleChooser.OutlineColor.HasValue)
+            {
+                layer.Style.Outline.Color = styleChooser.OutlineColor.Value;
+            }
+            if (styleChooser.CustomImage != null)
+            {
+                layer.Style.Symbol = styleChooser.CustomImage;
+            }
+        }
+
+        private void SetPolygonStyle(VectorLayer layer, FormStyleChooser styleChooser)
+        {
+            if (styleChooser.FillColor.HasValue)
+            {
+                layer.Style.Fill = new SolidBrush(styleChooser.FillColor.Value);
+            }
+            layer.Style.EnableOutline = true;
+            layer.Style.Outline.Width = styleChooser.PenSize;
+            if (styleChooser.OutlineColor.HasValue)
+            {
+                layer.Style.Outline.Color = styleChooser.OutlineColor.Value;
+            }
+            if (styleChooser.CustomImage != null)
+            {
+                layer.Style.Symbol = styleChooser.CustomImage;
             }
         }
     }
