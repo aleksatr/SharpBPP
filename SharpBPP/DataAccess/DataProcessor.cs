@@ -116,6 +116,7 @@ namespace SharpBPP.DataAccess
             labelLayer.Style.Font = new System.Drawing.Font(System.Drawing.FontFamily.GenericSansSerif, 11);
             labelLayer.Style.HorizontalAlignment = SharpMap.Styles.LabelStyle.HorizontalAlignmentEnum.Center;
             labelLayer.Style.VerticalAlignment = SharpMap.Styles.LabelStyle.VerticalAlignmentEnum.Top;
+            labelLayer.MultipartGeometryBehaviour = LabelLayer.MultipartGeometryBehaviourEnum.Largest;
 
             return labelLayer;
         }

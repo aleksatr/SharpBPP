@@ -22,6 +22,7 @@ namespace SharpBPP.Helpers
             prompt.MinimizeBox = false;
             Label textLabel = new Label() { Left = 50, Top = 20, Text = text };
             ComboBox combo = new ComboBox { Left = 50, Top = 50, Width = 400 };
+            combo.DropDownStyle = ComboBoxStyle.DropDownList;
             combo.DataSource = comboSource;
             //combo.ValueMember = ValueMember;
             //combo.DisplayMember = DisplyMember;

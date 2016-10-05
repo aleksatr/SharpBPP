@@ -52,6 +52,8 @@ namespace SharpBPP.Forms
             else
                 _layerCollection = layersToUse;
 
+            _labelLayers.Clear();
+
             mapBox.Map.Layers.AddCollection(_layerCollection);
             mapBox.Map.Layers.AddCollection(_labelLayers);
 
@@ -189,6 +191,7 @@ namespace SharpBPP.Forms
                 }
 
                 mapBox.Refresh();
+                mapBox.Invalidate() ;
             }
         }
 
@@ -242,6 +245,7 @@ namespace SharpBPP.Forms
                 mapBox.Map.BackgroundLayer.Clear();
 
             mapBox.Refresh();
+            mapBox.Invalidate();
         }
 
         private void btnSetStyle_Click(object sender, EventArgs e)
