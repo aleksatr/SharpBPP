@@ -476,7 +476,8 @@ namespace SharpBPP.Forms
                     layerAttributes = dataProcessor.GetAllLayerAttributes(treeViewLayers.SelectedNode.Text);
                     layerAttributes.Insert(0, "None");
                     string filter;
-                    string selectedAttribute = MainFormHelper.FilterDialog("Filter", "Select Attribute:", layerAttributes, out filter);
+                    bool likeOperation;
+                    string selectedAttribute = MainFormHelper.FilterDialogWithRadio("Filter", "Select Attribute:", layerAttributes, out filter, out likeOperation);
 
                     if (selectedAttribute != null)
                     {
@@ -491,7 +492,7 @@ namespace SharpBPP.Forms
                         if (selectedAttribute != "None")
                         {
                             var baseLayer = _layerCollection.Where(l => l.LayerName == treeViewLayers.SelectedNode.Text).FirstOrDefault();
-                            _tmpLayer = dataProcessor.CreateFilteredLayer(baseLayer as VectorLayer, selectedAttribute, filter);
+                            _tmpLayer = dataProcessor.CreateFilteredLayer(baseLayer as VectorLayer, selectedAttribute, filter, likeOperation);
                             
                             mapBox.Map.Layers.Add(_tmpLayer);
                             _tmpLayer.CoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84, ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator);

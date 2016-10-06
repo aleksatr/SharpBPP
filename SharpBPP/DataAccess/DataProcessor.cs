@@ -141,13 +141,17 @@ namespace SharpBPP.DataAccess
 
             return labelLayer;
         }
-
-        //ipak prosledi ceo layer mesto string table
-        public VectorLayer CreateFilteredLayer(VectorLayer baseLayer, string column, string filter)
+        
+        public VectorLayer CreateFilteredLayer(VectorLayer baseLayer, string column, string filter, bool useLikeOperation)
         {
             VectorLayer layer = new VectorLayer(baseLayer.LayerName + "_filtered");
             var postGisProvider = new SharpMap.Data.Providers.PostGIS(connectionStrings["PostgreSQL"].ConnectionString, baseLayer.LayerName, "gid");
-            postGisProvider.DefinitionQuery = "cast(" + column + " as text) like '%" + filter + "%'";//column + " like '%" + filter + "%'";
+
+            if (useLikeOperation)
+                postGisProvider.DefinitionQuery = "cast(" + column + " as text) like '%" + filter + "%'";
+            else
+                postGisProvider.DefinitionQuery = "cast(" + column + " as text) = '" + filter + "'";
+
             layer.DataSource = postGisProvider;
 
             layer.Style.Outline = new System.Drawing.Pen(System.Drawing.Color.DarkRed, 5);
