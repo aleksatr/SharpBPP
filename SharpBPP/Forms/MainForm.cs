@@ -26,7 +26,7 @@ namespace SharpBPP.Forms
         private DataProcessor dataProcessor;
         private bool _showBackgroundLayer = true;
         private CoordinateTransformationFactory _ctFact = new CoordinateTransformationFactory();
-
+        private VectorLayer _tmpLayer;
 
         public MainForm()
         {
@@ -113,6 +113,12 @@ namespace SharpBPP.Forms
                 if (label != null && !label.IsDisposed)
                     label.Dispose();
             }
+
+            if (_tmpLayer != null && !_tmpLayer.IsDisposed)
+            {
+                _tmpLayer.Dispose();
+                _tmpLayer = null;
+            }
         }
         private void btnPostgreConnect_Click(object sender, EventArgs e)
         {
@@ -138,6 +144,7 @@ namespace SharpBPP.Forms
 
             treeViewLayers.Nodes.Clear();
             treeViewLayers.Nodes.AddRange(childNodes);
+            treeViewLayers.TreeViewNodeSorter = new TreeViewNodeComparer(mapBox.Map.Layers);
         }
 
         ~MainForm()
@@ -163,6 +170,8 @@ namespace SharpBPP.Forms
 
                     if (layerLabel != null)
                         mapBox.Map.Layers.Add(layerLabel);
+
+                    treeViewLayers.Sort();
                 }
                 else
                 {
@@ -172,6 +181,15 @@ namespace SharpBPP.Forms
 
                     if (layerLabel != null)
                         mapBox.Map.Layers.Remove(layerLabel);
+                }
+
+                if (_tmpLayer != null && mapBox.Map.Layers.Contains(_tmpLayer))
+                {
+                    mapBox.Map.Layers.Remove(_tmpLayer);
+                    if (!_tmpLayer.IsDisposed)
+                        _tmpLayer.Dispose();
+                    _tmpLayer.Dispose();
+                    _tmpLayer = null;
                 }
 
                 mapBox.Refresh();
@@ -237,6 +255,13 @@ namespace SharpBPP.Forms
 
                             newLabel.CoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84, ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator);
                             newLabel.ReverseCoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);
+                        }
+
+                        if(_tmpLayer != null && mapBox.Map.Layers.Contains(_tmpLayer))
+                        {
+                            mapBox.Map.Layers.Remove(_tmpLayer);
+                            _tmpLayer.Dispose();
+                            _tmpLayer = null;
                         }
 
                         mapBox.Refresh();
@@ -412,6 +437,115 @@ namespace SharpBPP.Forms
                 else
                 {
                     MessageBox.Show("Check Layer in TreeView to create subcategories!");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select layer from TreeView!");
+            }
+        }
+
+        private void btnFilterLayer_Click(object sender, EventArgs e)
+        {
+            List<string> layerAttributes;
+            if (treeViewLayers.SelectedNode != null && treeViewLayers.SelectedNode.Parent == null)
+            {
+                if (treeViewLayers.SelectedNode.Checked)
+                {
+                    layerAttributes = dataProcessor.GetAllLayerAttributes(treeViewLayers.SelectedNode.Text);
+                    layerAttributes.Insert(0, "None");
+                    string filter;
+                    string selectedAttribute = MainFormHelper.FilterDialog("Filter", "Select Attribute:", layerAttributes, out filter);
+
+                    if (selectedAttribute != null)
+                    {
+                        if (_tmpLayer != null)
+                        {
+                            mapBox.Map.Layers.Remove(_tmpLayer);
+                            if (!_tmpLayer.IsDisposed)
+                                _tmpLayer.Dispose();
+                            _tmpLayer = null;
+                        }
+
+                        if (selectedAttribute != "None")
+                        {
+                            var baseLayer = _layerCollection.Where(l => l.LayerName == treeViewLayers.SelectedNode.Text).FirstOrDefault();
+                            _tmpLayer = dataProcessor.CreateFilteredLayer(baseLayer as VectorLayer, selectedAttribute, filter);
+                            
+                            mapBox.Map.Layers.Add(_tmpLayer);
+                            _tmpLayer.CoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84, ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator);
+                            _tmpLayer.ReverseCoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);
+                        }
+
+                        mapBox.Refresh();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Check Layer in TreeView to filter!");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select layer from TreeView!");
+            }
+        }
+
+        private void btnZUp_Click(object sender, EventArgs e)
+        {
+            TreeNode node = treeViewLayers.SelectedNode;
+
+            if (node != null && node.Parent == null)
+            {
+                if (node.Checked)
+                {
+                    VectorLayer selectedLayer = (VectorLayer) mapBox.Map.Layers.Where(l => l.LayerName == node.Text).FirstOrDefault();
+                    int maxIndex = mapBox.Map.Layers.Count - 1;
+                    int currentIndex = mapBox.Map.Layers.IndexOf(selectedLayer);
+
+                    if (currentIndex < maxIndex)
+                    {
+                        mapBox.Map.Layers.RemoveAt(currentIndex);
+                        mapBox.Map.Layers.Insert(currentIndex + 1, selectedLayer);
+                        mapBox.Refresh();
+
+                        treeViewLayers.Sort();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Check Layer in TreeView to change Z-order!");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select layer from TreeView!");
+            }
+        }
+
+        private void btnZDown_Click(object sender, EventArgs e)
+        {
+            TreeNode node = treeViewLayers.SelectedNode;
+
+            if (node != null && node.Parent == null)
+            {
+                if (node.Checked)
+                {
+                    VectorLayer selectedLayer = (VectorLayer)mapBox.Map.Layers.Where(l => l.LayerName == node.Text).FirstOrDefault();
+                    int currentIndex = mapBox.Map.Layers.IndexOf(selectedLayer);
+
+                    if (currentIndex > 0)
+                    {
+                        mapBox.Map.Layers.RemoveAt(currentIndex);
+                        mapBox.Map.Layers.Insert(currentIndex - 1, selectedLayer);
+                        mapBox.Refresh();
+
+                        treeViewLayers.Sort();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Check Layer in TreeView to change Z-order!");
                 }
             }
             else
