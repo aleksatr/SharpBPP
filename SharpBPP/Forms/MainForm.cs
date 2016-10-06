@@ -169,10 +169,6 @@ namespace SharpBPP.Forms
         {
             if (e.Action != TreeViewAction.Unknown)
             {
-                //if (e.Node.Nodes.Count > 0)
-                //{
-                //    this.CheckAllChildNodes(e.Node, e.Node.Checked);
-                //}
                 treeViewLayers.SelectedNode = e.Node;
                 if (e.Node.Parent != null)
                 {
@@ -207,28 +203,7 @@ namespace SharpBPP.Forms
         {
             VectorLayer layerToFilter = (VectorLayer)_layerCollection.Where(l => l.LayerName == node.Parent.Text).FirstOrDefault();
             SharpMap.Data.Providers.PostGIS postgisProvider = (SharpMap.Data.Providers.PostGIS)layerToFilter.DataSource;
-
-            //string currentQuery = postgisProvider.DefinitionQuery;
-
-            //if (node.Checked)
-            //{
-            //    if (string.IsNullOrWhiteSpace(currentQuery))
-            //    {
-            //        currentQuery = node.Parent.Tag.ToString() + " = '" + node.Text + "'";
-            //    }
-            //    else
-            //    {
-            //        currentQuery += " OR " + node.Parent.Tag.ToString() + " = '" + node.Text + "'";
-            //    }
-            //}
-            //else
-            //{
-            //    currentQuery = currentQuery.Replace("OR " + node.Parent.Tag.ToString() + " = '" + node.Text + "'", "");
-            //    currentQuery = currentQuery.Replace(node.Parent.Tag.ToString() + " = '" + node.Text + "'", "");
-            //}
-
-            //postgisProvider.DefinitionQuery = currentQuery;
-
+            
             StringBuilder sb = new StringBuilder();
             List<TreeNode> checkedNodes = node.Parent.Nodes.Cast<TreeNode>().Where(c => c.Checked).ToList();
 
