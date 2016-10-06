@@ -14,6 +14,15 @@ using SharpBPP.Entities;
 using SharpBPP.DataAccess;
 using SharpBPP.Helpers;
 using ProjNet.CoordinateSystems.Transformations;
+using GeoAPI.CoordinateSystems;
+using GeoAPI.CoordinateSystems.Transformations;
+using SharpMap.Rendering.Symbolizer;
+using NetTopologySuite.Geometries;
+using NetTopologySuite.Utilities;
+using SharpMap.Forms;
+using SharpMap.Data;
+using System.Collections.ObjectModel;
+using SharpMap.Data.Providers;
 
 namespace SharpBPP.Forms
 {
@@ -26,10 +35,21 @@ namespace SharpBPP.Forms
         private DataProcessor dataProcessor;
         private bool _showBackgroundLayer = true;
         private CoordinateTransformationFactory _ctFact = new CoordinateTransformationFactory();
+        private VectorLayer circleLayer;
+        private FilterProcessor filterProcessor;
 
+        public MapBox Box
+        {
+            get
+            {
+                return this.mapBox;
+            }
+        }
+
+        public event EventHandler BeforeDrawCircle;
 
         public MainForm()
-        {
+        {            
             InitializeComponent();
             _connectionStrings = ConfigurationManager.ConnectionStrings;
             _appSettings = ConfigurationManager.AppSettings;
@@ -60,7 +80,7 @@ namespace SharpBPP.Forms
             foreach (VectorLayer layer in _layerCollection)
             {
                 layer.CoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84, ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator);
-                layer.ReverseCoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);
+                layer.ReverseCoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);               
             }
 
             foreach (LabelLayer label in _labelLayers)
@@ -86,12 +106,12 @@ namespace SharpBPP.Forms
 
         private void toolStripButtonNone_ButtonClick(object sender, EventArgs e)
         {
-            mapBox.ActiveTool = SharpMap.Forms.MapBox.Tools.None;
+            mapBox.ActiveTool = MapBox.Tools.None;
         }
 
         private void toolStripButtonPan_Click(object sender, EventArgs e)
         {
-            mapBox.ActiveTool = SharpMap.Forms.MapBox.Tools.Pan;
+            mapBox.ActiveTool = MapBox.Tools.Pan;
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -442,6 +462,91 @@ namespace SharpBPP.Forms
             else
             {
                 MessageBox.Show("Please select layer from TreeView!");
+            }
+        }
+
+        private void mapBox_MouseMove(GeoAPI.Geometries.Coordinate worldPos, MouseEventArgs imagePos)
+        {
+            lblCoordinate.Text = "Coordinate: " + worldPos.X + ", " + worldPos.Y;
+        }
+
+        private void mapBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (filterProcessor == null || mapBox.ActiveTool != MapBox.Tools.None)
+                return;
+
+            BeforeDrawCircle.Invoke(sender, e);
+            if (circleLayer != null)
+            {
+                mapBox.Map.Layers.Remove(circleLayer);
+                circleLayer.Dispose();
+            }
+            circleLayer = filterProcessor.Layer;
+
+            circleLayer.CoordinateTransformation = mapBox.Map.Layers.Cast<VectorLayer>().First().ReverseCoordinateTransformation;        
+            circleLayer.ReverseCoordinateTransformation = mapBox.Map.Layers.Cast<VectorLayer>().First().CoordinateTransformation;
+
+            FeatureDataSet ds = new FeatureDataSet();
+            foreach (VectorLayer layer in mapBox.Map.Layers)
+            {
+                try
+                {
+                    layer.DataSource.ExecuteIntersectionQuery(circleLayer.Envelope, ds);
+                }
+                catch (Exception exception)
+                {
+                    filterProcessor.Dispose();
+                    filterProcessor = null;
+                    return;
+                }
+            }
+
+            LayerCollection resultLayerCollection = new LayerCollection();
+            foreach (FeatureDataTable table in ds.Tables)
+            {
+                VectorLayer resultLayer = new VectorLayer(table.TableName);
+                List<GeoAPI.Geometries.IGeometry> collection = new List<GeoAPI.Geometries.IGeometry>();
+                foreach (FeatureDataRow row in table.Rows)
+                {
+                    collection.Add(row.Geometry);
+                }
+                GeometryProvider geoProvider = new GeometryProvider(collection);
+                resultLayer.DataSource = geoProvider;
+                VectorLayer layerOnMap = mapBox.Map.Layers.Where(y => y.LayerName == table.TableName).First() as VectorLayer;
+                resultLayer.Style = layerOnMap.Style;
+
+                resultLayer.CoordinateTransformation = layerOnMap.CoordinateTransformation;
+                resultLayer.ReverseCoordinateTransformation = layerOnMap.ReverseCoordinateTransformation;
+                resultLayerCollection.Add(resultLayer);
+            }
+            circleLayer.CoordinateTransformation = null;
+            circleLayer.ReverseCoordinateTransformation = null;
+            //  
+            // VectorLayer resultLayer = new VectorLayer("ResultLayer");
+            //  resultLayer.DataSource = geoProvider;
+            mapBox.Map.Layers.Clear();
+            mapBox.Map.Layers.AddCollection(resultLayerCollection);
+
+
+            mapBox.Map.Layers.Add(circleLayer);
+            mapBox.Refresh();
+            mapBox.Invalidate();
+        }
+
+        private void btnDrawCircle_Click(object sender, EventArgs e)
+        {
+            if (filterProcessor != null)
+            {
+                filterProcessor.Dispose();
+                filterProcessor = null;
+            }
+            else
+            {
+                FormSelectCircleSize fscs = new FormSelectCircleSize();
+                if (fscs.ShowDialog() == DialogResult.OK)
+                {
+                    filterProcessor = new FilterProcessor(this, fscs.CircleSize);
+                }
             }
         }
     }
