@@ -162,7 +162,7 @@ namespace SharpBPP.Forms
                 childNodes[i] = new TreeNode(_layerCollection[i].LayerName);
                 childNodes[i].Checked = true;
             }
-
+            
             treeViewLayers.Nodes.Clear();
             treeViewLayers.Nodes.AddRange(childNodes);
             treeViewLayers.TreeViewNodeSorter = new TreeViewNodeComparer(mapBox.Map.Layers);
@@ -193,6 +193,7 @@ namespace SharpBPP.Forms
                         mapBox.Map.Layers.Add(layerLabel);
 
                     treeViewLayers.Sort();
+                    treeViewLayers.SelectedNode = e.Node;
                 }
                 else
                 {
@@ -532,6 +533,7 @@ namespace SharpBPP.Forms
                         mapBox.Refresh();
 
                         treeViewLayers.Sort();
+                        treeViewLayers.SelectedNode = node;
                     }
                 }
                 else
@@ -563,6 +565,7 @@ namespace SharpBPP.Forms
                         mapBox.Refresh();
 
                         treeViewLayers.Sort();
+                        treeViewLayers.SelectedNode = node;
                     }
                 }
                 else
