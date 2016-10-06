@@ -176,6 +176,7 @@
     <Compile Include="GdalConfiguration.cs" />
     <Compile Include="GdalNativeConfiguration.cs" />
     <Compile Include="Helpers\MainFormHelper.cs" />
+    <Compile Include="Helpers\TreeViewNodeComparer.cs" />
     <Compile Include="Helpers\TransformHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

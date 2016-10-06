@@ -91,7 +91,7 @@ namespace SharpBPP.DataAccess
 
         public ILayer CreateBackgroundLayer()
         {
-            return new TileAsyncLayer(new BruTile.Web.OsmTileSource(), "OSM");
+            return new TileLayer(new BruTile.Web.OsmTileSource(), "OSM");
         }
 
         public LayerCollection CreateLayers()
@@ -120,7 +120,6 @@ namespace SharpBPP.DataAccess
                 layer.DataSource = new SharpMap.Data.Providers.PostGIS(
                 connectionStrings["PostgreSQL"].ConnectionString, record.TableName, "gid");
                 tmpLayerCollection.Add(layer);
-
             }
 
             return tmpLayerCollection;
@@ -141,6 +140,27 @@ namespace SharpBPP.DataAccess
             labelLayer.MultipartGeometryBehaviour = LabelLayer.MultipartGeometryBehaviourEnum.Largest;
 
             return labelLayer;
+        }
+        
+        public VectorLayer CreateFilteredLayer(VectorLayer baseLayer, string column, string filter, bool useLikeOperation)
+        {
+            VectorLayer layer = new VectorLayer(baseLayer.LayerName + "_filtered");
+            var postGisProvider = new SharpMap.Data.Providers.PostGIS(connectionStrings["PostgreSQL"].ConnectionString, baseLayer.LayerName, "gid");
+
+            if (useLikeOperation)
+                postGisProvider.DefinitionQuery = "cast(" + column + " as text) like '%" + filter + "%'";
+            else
+                postGisProvider.DefinitionQuery = "cast(" + column + " as text) = '" + filter + "'";
+
+            layer.DataSource = postGisProvider;
+
+            layer.Style.Outline = new System.Drawing.Pen(System.Drawing.Color.DarkRed, 5);
+            layer.Style.EnableOutline = true;
+            layer.Style.Fill = new System.Drawing.SolidBrush(System.Drawing.Color.IndianRed);
+            layer.Style.Line = new System.Drawing.Pen(System.Drawing.Color.IndianRed, 5);
+            layer.Style.PointColor = new System.Drawing.SolidBrush(System.Drawing.Color.DarkRed);
+            layer.Style.PointSize = baseLayer.Style.PointSize + 5.0f;
+            return layer;
         }
     }
 }
