@@ -223,7 +223,6 @@
             this.mapBox.Text = "mapBox1";
             this.mapBox.WheelZoomMagnitude = -2D;
             this.mapBox.MouseMove += new SharpMap.Forms.MapBox.MouseEventHandler(this.mapBox_MouseMove);
-            this.mapBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.mapBox_MouseClick);
             // 
             // toolStrip2
             // 

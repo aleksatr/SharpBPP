@@ -605,6 +605,9 @@ namespace SharpBPP.Forms
 
             mapBox.Refresh();
             mapBox.Invalidate();
+
+
+            mapBox.MouseClick -= mapBox_MouseClick;
         }
 
         private void btnDrawCircle_Click(object sender, EventArgs e)
@@ -613,9 +616,14 @@ namespace SharpBPP.Forms
             if (fscs.ShowDialog() == DialogResult.OK)
             {
                 if (filterProcessor != null)
+                {
+                    PopulateMap();
                     filterProcessor.Dispose();
+                }
                 filterProcessor = new FilterProcessor(this, fscs.CircleSize);
             }
+
+            mapBox.MouseClick += mapBox_MouseClick;
         }
     }
 }
