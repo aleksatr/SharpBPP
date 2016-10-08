@@ -1,5 +1,6 @@
 ﻿using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 using NetTopologySuite.Utilities;
 using SharpBPP.Forms;
 using SharpMap.Data;
@@ -23,18 +24,23 @@ namespace SharpBPP.DataAccess
         private IGeometry geometry;
         private ICoordinateTransformation coordTrans;
         private ICoordinateTransformation reversTrans;
-        public FilterProcessor(MainForm parent, int circleSize)
+
+        public FilterProcessor(MainForm parent)
         {
             this.parent = parent;
-            this.circleSize = circleSize;
 
             coordTrans = parent.Box.Map.Layers.Cast<VectorLayer>().First().CoordinateTransformation;
             reversTrans = parent.Box.Map.Layers.Cast<VectorLayer>().First().ReverseCoordinateTransformation;
         }
+        public FilterProcessor(MainForm parent, int circleSize)
+            :this(parent)
+        {            
+            this.circleSize = circleSize;
+        }
 
-        private void CreateGeometry(Point location)
+        private void CreateGeometry(System.Drawing.Point location)
         {
-            Coordinate coords = parent.Box.Map.ImageToWorld(location);           
+            Coordinate coords = parent.Box.Map.ImageToWorld(location);
 
             coords.X -= circleSize / 2;
             coords.Y -= circleSize / 2;
@@ -42,15 +48,15 @@ namespace SharpBPP.DataAccess
 
             GeometricShapeFactory gf = new GeometricShapeFactory();
             gf.Base = coords;
-            gf.Centre = coords;            
+            gf.Centre = coords;
             gf.Size = circleSize;
             gf.Width = circleSize;
             gf.Height = circleSize;
-            
 
-            IPolygon circle  = gf.CreateCircle();
 
-            Coordinate transformedBottomLeft =  reversTrans.MathTransform.Transform(gf.Envelope.BottomLeft());
+            IPolygon circle = gf.CreateCircle();
+
+            Coordinate transformedBottomLeft = reversTrans.MathTransform.Transform(gf.Envelope.BottomLeft());
             Coordinate transformedBottomRight = reversTrans.MathTransform.Transform(gf.Envelope.BottomRight());
 
             Coordinate transformedTopLeft = reversTrans.MathTransform.Transform(gf.Envelope.TopLeft());
@@ -65,20 +71,27 @@ namespace SharpBPP.DataAccess
 
             geometry = gf.CreateCircle();
 
-            GeometryProvider geoProvider = new GeometryProvider(circle);
-
-            layer = new VectorLayer("CircleLayer");
-            layer.DataSource = geoProvider;
-
-            layer.Style.Fill = new SolidBrush(Color.FromArgb(50, 51, 181, 229));
-
-            layer.Style.EnableOutline = true;
-            layer.Style.Outline.Width = 4;
-
-            layer.Style.Outline.Color = Color.Blue;
+            layer = CreateLayerFromDrawing(circle, "CircleLayer", Color.FromArgb(50, 51, 181, 229), Color.Blue);
         }
 
-        public LayerCollection CrateResultLayerCollection(LayerCollection layers, Point location)
+        private VectorLayer CreateLayerFromDrawing(IGeometry geom, string name, Color fillColor, Color outlineColor)
+        {
+            GeometryProvider geoProvider = new GeometryProvider(geom);
+
+            VectorLayer resultLayer= new VectorLayer(name);
+            resultLayer.DataSource = geoProvider;
+
+            resultLayer.Style.Fill = new SolidBrush(fillColor);
+
+            resultLayer.Style.EnableOutline = true;
+            resultLayer.Style.Outline.Width = 4;
+
+            resultLayer.Style.Outline.Color = outlineColor;
+
+            return resultLayer;
+        }
+
+        public LayerCollection CrateResultLayerCollection(LayerCollection layers, System.Drawing.Point location)
         {
             CreateGeometry(location);
             layer.CoordinateTransformation = reversTrans;
@@ -89,7 +102,7 @@ namespace SharpBPP.DataAccess
             {
               //  try
               //  {
-                    layer.DataSource.ExecuteIntersectionQuery(geometry.EnvelopeInternal, ds);
+                    layer.DataSource.ExecuteIntersectionQuery(geometry.EnvelopeInternal, ds);         
               //  }
               //  catch (Exception exception)
               //  {
@@ -102,7 +115,6 @@ namespace SharpBPP.DataAccess
             LayerCollection resultLayerCollection = new LayerCollection();
             foreach (FeatureDataTable table in ds.Tables)
             {
-                VectorLayer resultLayer = new VectorLayer(table.TableName);
                 List<GeoAPI.Geometries.IGeometry> collection = new List<GeoAPI.Geometries.IGeometry>();
                 foreach (FeatureDataRow row in table.Rows)
                 {
@@ -110,21 +122,56 @@ namespace SharpBPP.DataAccess
                     {
                         collection.Add(row.Geometry);
                     }
-                    GeometryProvider geoProvider = new GeometryProvider(collection);
-                    resultLayer.DataSource = geoProvider;
-                    VectorLayer layerOnMap = layers.Where(y => y.LayerName == table.TableName).First() as VectorLayer;
-                    resultLayer.Style = layerOnMap.Style;
-
-                    resultLayer.CoordinateTransformation = layerOnMap.CoordinateTransformation;
-                    resultLayer.ReverseCoordinateTransformation = layerOnMap.ReverseCoordinateTransformation;
                 }
+                VectorLayer layerOnMap = layers.Where(y => y.LayerName == table.TableName).First() as VectorLayer;
+                VectorLayer resultLayer = CreateResultLayer(layerOnMap, collection);
                 resultLayerCollection.Add(resultLayer);
-
             }
             layer.CoordinateTransformation = null;
             layer.ReverseCoordinateTransformation = null;
             resultLayerCollection.Add(layer);
 
+            return resultLayerCollection;
+        }
+
+        private VectorLayer CreateResultLayer(VectorLayer layerOnMap, IEnumerable<IGeometry> collection)
+        {
+            VectorLayer resultLayer = new VectorLayer(layerOnMap.LayerName);
+            GeometryProvider geoProvider = new GeometryProvider(collection);
+            resultLayer.DataSource = geoProvider;
+            resultLayer.Style = layerOnMap.Style;
+            resultLayer.CoordinateTransformation = layerOnMap.CoordinateTransformation;
+            resultLayer.ReverseCoordinateTransformation = layerOnMap.ReverseCoordinateTransformation;
+
+            return resultLayer;
+        }
+
+        public LayerCollection PolygonFiltering(LayerCollection layers, IGeometry geom)
+        {
+            IGeometry polygon = (IGeometry)geom.Clone();
+            LayerCollection resultLayerCollection = new LayerCollection();
+            foreach (VectorLayer layerOnMap in layers)
+            {
+                List<IGeometry> geometries = layerOnMap.DataSource.GetGeometriesInView(layerOnMap.DataSource.GetExtents()).ToList();
+                Coordinate[] cordinates = polygon.Coordinates;
+                Coordinate[] transformedCoordinates = new Coordinate[cordinates.Length];
+                
+                for (int i = 0; i < cordinates.Length - 1; i++)
+                {
+                    Coordinate transformed = reversTrans.MathTransform.Transform(cordinates[i]);
+                    transformedCoordinates[i] = transformed;
+                }
+                transformedCoordinates[cordinates.Length - 1] = transformedCoordinates.First();
+
+                LinearRing lr = new LinearRing(transformedCoordinates);
+                Polygon p = new Polygon(lr);
+
+                var y = geometries.Where(g => g.Within(p)).ToList();
+                VectorLayer resultLayer = CreateResultLayer(layerOnMap, geometries.Where(g => g.Within(p)));
+                resultLayerCollection.Add(resultLayer);
+            }
+            layer = CreateLayerFromDrawing(geom, "PolygonLayer", Color.FromArgb(50, 51, 181, 229), Color.Blue);
+            resultLayerCollection.Add(layer);
             return resultLayerCollection;
         }
 

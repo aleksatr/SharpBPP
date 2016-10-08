@@ -606,7 +606,6 @@ namespace SharpBPP.Forms
             mapBox.Refresh();
             mapBox.Invalidate();
 
-
             mapBox.MouseClick -= mapBox_MouseClick;
         }
 
@@ -624,6 +623,34 @@ namespace SharpBPP.Forms
             }
 
             mapBox.MouseClick += mapBox_MouseClick;
+        }
+
+        private void mapBox_GeometryDefined(IGeometry geometry)
+        {
+            if (resultLayerCollection != null)
+            {
+                resultLayerCollection.Clear();
+            }
+
+            if (filterProcessor != null)
+            {
+                PopulateMap();
+                filterProcessor.Dispose();
+            }
+            filterProcessor = new FilterProcessor(this);
+
+            resultLayerCollection =  filterProcessor.PolygonFiltering(mapBox.Map.Layers, geometry);
+
+            mapBox.Map.Layers.Clear();
+            mapBox.Map.Layers.AddCollection(resultLayerCollection);
+
+            mapBox.Refresh();
+            mapBox.Invalidate();
+        }
+
+        private void btnPolygon_Click(object sender, EventArgs e)
+        {
+            mapBox.ActiveTool = MapBox.Tools.DrawPolygon;
         }
     }
 }
