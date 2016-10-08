@@ -38,7 +38,7 @@ namespace SharpBPP.DataAccess
             this.circleSize = circleSize;
         }
 
-        private void CreateGeometry(System.Drawing.Point location)
+        private void CreateGeometry(System.Drawing.Point location, bool withLayer = true)
         {
             Coordinate coords = parent.Box.Map.ImageToWorld(location);
 
@@ -56,22 +56,25 @@ namespace SharpBPP.DataAccess
 
             IPolygon circle = gf.CreateCircle();
 
-            Coordinate transformedBottomLeft = reversTrans.MathTransform.Transform(gf.Envelope.BottomLeft());
-            Coordinate transformedBottomRight = reversTrans.MathTransform.Transform(gf.Envelope.BottomRight());
 
-            Coordinate transformedTopLeft = reversTrans.MathTransform.Transform(gf.Envelope.TopLeft());
+            geometry = CreateGeometryToCompare(circle.Coordinates);
+            if(withLayer)
+                layer = CreateLayerFromDrawing(circle, "CircleLayer", Color.FromArgb(50, 51, 181, 229), Color.Blue);
+        }
 
-            gf = new GeometricShapeFactory();
-            gf.Base = transformedCoordinate;
-            gf.Centre = transformedCoordinate;
-            gf.Size = transformedBottomRight.Distance(transformedBottomLeft);
-            gf.Width = transformedBottomRight.Distance(transformedBottomLeft);
-            gf.Height = transformedTopLeft.Distance(transformedBottomLeft);
+        private IPolygon CreateGeometryToCompare(Coordinate[] coordinates)
+        {
+            Coordinate[] transformedCoordinates = new Coordinate[coordinates.Length];
 
+            for (int i = 0; i < coordinates.Length - 1; i++)
+            {
+                Coordinate transformed = reversTrans.MathTransform.Transform(coordinates[i]);
+                transformedCoordinates[i] = transformed;
+            }
+            transformedCoordinates[coordinates.Length - 1] = transformedCoordinates.First();
 
-            geometry = gf.CreateCircle();
-
-            layer = CreateLayerFromDrawing(circle, "CircleLayer", Color.FromArgb(50, 51, 181, 229), Color.Blue);
+            LinearRing lr = new LinearRing(transformedCoordinates);
+            return new Polygon(lr); ;
         }
 
         private VectorLayer CreateLayerFromDrawing(IGeometry geom, string name, Color fillColor, Color outlineColor)
@@ -91,26 +94,23 @@ namespace SharpBPP.DataAccess
             return resultLayer;
         }
 
+        private FeatureDataSet GetFeatureDataSet(LayerCollection layers, IGeometry geometry)
+        {
+            FeatureDataSet ds = new FeatureDataSet();
+            foreach (VectorLayer layer in layers)
+            {
+                layer.DataSource.ExecuteIntersectionQuery(geometry.EnvelopeInternal, ds);
+            }
+            return ds;
+        }
+
         public LayerCollection CrateResultLayerCollection(LayerCollection layers, System.Drawing.Point location)
         {
             CreateGeometry(location);
             layer.CoordinateTransformation = reversTrans;
             layer.ReverseCoordinateTransformation = coordTrans;
 
-            FeatureDataSet ds = new FeatureDataSet();
-            foreach (VectorLayer layer in layers)
-            {
-              //  try
-              //  {
-                    layer.DataSource.ExecuteIntersectionQuery(geometry.EnvelopeInternal, ds);         
-              //  }
-              //  catch (Exception exception)
-              //  {
-              //      filterProcessor.Dispose();
-              //      filterProcessor = null;
-              //      return;
-              //  }
-            }
+            FeatureDataSet ds = GetFeatureDataSet(layers, geometry);
 
             LayerCollection resultLayerCollection = new LayerCollection();
             foreach (FeatureDataTable table in ds.Tables)
@@ -153,18 +153,8 @@ namespace SharpBPP.DataAccess
             foreach (VectorLayer layerOnMap in layers)
             {
                 List<IGeometry> geometries = layerOnMap.DataSource.GetGeometriesInView(layerOnMap.DataSource.GetExtents()).ToList();
-                Coordinate[] cordinates = polygon.Coordinates;
-                Coordinate[] transformedCoordinates = new Coordinate[cordinates.Length];
-                
-                for (int i = 0; i < cordinates.Length - 1; i++)
-                {
-                    Coordinate transformed = reversTrans.MathTransform.Transform(cordinates[i]);
-                    transformedCoordinates[i] = transformed;
-                }
-                transformedCoordinates[cordinates.Length - 1] = transformedCoordinates.First();
 
-                LinearRing lr = new LinearRing(transformedCoordinates);
-                Polygon p = new Polygon(lr);
+                IPolygon p = CreateGeometryToCompare(polygon.Coordinates);
                 
                 VectorLayer resultLayer = CreateResultLayer(layerOnMap, geometries.Where(g => g.Within(p)));
                 resultLayerCollection.Add(resultLayer);
@@ -172,6 +162,32 @@ namespace SharpBPP.DataAccess
             layer = CreateLayerFromDrawing(geom, "PolygonLayer", Color.FromArgb(50, 51, 181, 229), Color.Blue);
             resultLayerCollection.Add(layer);
             return resultLayerCollection;
+        }
+
+        public string GetFeatureInfo(System.Drawing.Point location, LayerCollection collection)
+        {
+            string featureInfo = "";
+            CreateGeometry(location, false);
+
+            FeatureDataSet ds = GetFeatureDataSet(collection, geometry);
+
+            LayerCollection resultLayerCollection = new LayerCollection();
+            foreach (FeatureDataTable table in ds.Tables)
+            {
+                if (table.Rows.Count > 0)
+                {
+                    featureInfo += table.TableName + ":" + Environment.NewLine;
+                    foreach (FeatureDataRow row in table.Rows)
+                    {
+                        for (int i = 0; i < row.ItemArray.Length; i++)
+                        {
+                            featureInfo += table.Columns[i] + " : " + row.ItemArray[i] + Environment.NewLine;
+                        }
+                    }
+                }
+            }
+
+            return featureInfo;
         }
 
         public void Dispose()

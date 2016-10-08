@@ -39,6 +39,7 @@
             this.tableLayoutPanelLeft = new System.Windows.Forms.TableLayoutPanel();
             this.gbxLayers = new System.Windows.Forms.GroupBox();
             this.treeViewLayers = new System.Windows.Forms.TreeView();
+            this.txtFeatureInfo = new System.Windows.Forms.TextBox();
             this.mapBox = new SharpMap.Forms.MapBox();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
             this.btnZUp = new System.Windows.Forms.ToolStripButton();
@@ -54,6 +55,7 @@
             this.btnCreateSubnodes = new System.Windows.Forms.ToolStripButton();
             this.btnFilterLayer = new System.Windows.Forms.ToolStripButton();
             this.btnDrawCircle = new System.Windows.Forms.ToolStripButton();
+            this.btnFeatureInfo = new System.Windows.Forms.ToolStripButton();
             this.lblInfo = new System.Windows.Forms.ToolStripStatusLabel();
             this.btnRoute = new System.Windows.Forms.ToolStripButton();
             this.menuStrip.SuspendLayout();
@@ -170,6 +172,7 @@
             this.tableLayoutPanelLeft.ColumnCount = 1;
             this.tableLayoutPanelLeft.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanelLeft.Controls.Add(this.gbxLayers, 0, 0);
+            this.tableLayoutPanelLeft.Controls.Add(this.txtFeatureInfo, 0, 1);
             this.tableLayoutPanelLeft.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanelLeft.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanelLeft.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
@@ -205,6 +208,18 @@
             this.treeViewLayers.Size = new System.Drawing.Size(168, 281);
             this.treeViewLayers.TabIndex = 0;
             this.treeViewLayers.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeViewLayers_AfterCheck);
+            // 
+            // txtFeatureInfo
+            // 
+            this.txtFeatureInfo.AcceptsReturn = true;
+            this.txtFeatureInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtFeatureInfo.Location = new System.Drawing.Point(3, 260);
+            this.txtFeatureInfo.Multiline = true;
+            this.txtFeatureInfo.Name = "txtFeatureInfo";
+            this.txtFeatureInfo.ReadOnly = true;
+            this.txtFeatureInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtFeatureInfo.Size = new System.Drawing.Size(173, 252);
+            this.txtFeatureInfo.TabIndex = 1;
             // 
             // mapBox
             // 
@@ -276,7 +291,8 @@
             this.btnCreateSubnodes,
             this.btnFilterLayer,
             this.btnDrawCircle,
-            this.btnRoute});
+            this.btnRoute,
+            this.btnFeatureInfo});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1002, 27);
@@ -397,6 +413,16 @@
             this.btnRoute.Size = new System.Drawing.Size(52, 24);
             this.btnRoute.Text = "Route";
             this.btnRoute.Click += new System.EventHandler(this.btnRoute_Click);
+            //
+            // btnFeatureInfo
+            // 
+            this.btnFeatureInfo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.btnFeatureInfo.Image = ((System.Drawing.Image)(resources.GetObject("btnFeatureInfo.Image")));
+            this.btnFeatureInfo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnFeatureInfo.Name = "btnFeatureInfo";
+            this.btnFeatureInfo.Size = new System.Drawing.Size(74, 22);
+            this.btnFeatureInfo.Text = "Feature Info";
+            this.btnFeatureInfo.Click += new System.EventHandler(this.btnFeatureInfo_Click);
             // 
             // MainForm
             // 
@@ -428,6 +454,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
             this.tableLayoutPanelLeft.ResumeLayout(false);
+            this.tableLayoutPanelLeft.PerformLayout();
             this.gbxLayers.ResumeLayout(false);
             this.toolStrip2.ResumeLayout(false);
             this.toolStrip2.PerformLayout();
@@ -467,5 +494,7 @@
         private System.Windows.Forms.ToolStripButton btnPolygon;
         private System.Windows.Forms.ToolStripStatusLabel lblInfo;
         private System.Windows.Forms.ToolStripButton btnRoute;
+        private System.Windows.Forms.ToolStripButton btnFeatureInfo;
+        private System.Windows.Forms.TextBox txtFeatureInfo;
     }
 }
