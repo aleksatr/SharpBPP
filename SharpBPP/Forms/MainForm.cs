@@ -39,6 +39,7 @@ namespace SharpBPP.Forms
         private LayerCollection resultLayerCollection;
         private FilterProcessor filterProcessor;
         private VectorLayer _tmpLayer;
+        private MapDrawingState _state;
 
         public MapBox Box
         {
@@ -55,6 +56,7 @@ namespace SharpBPP.Forms
             _appSettings = ConfigurationManager.AppSettings;
 
             dataProcessor = new DataProcessor();
+            _state = MapDrawingState.Default;
 
             PopulateMap();
         }
@@ -627,6 +629,52 @@ namespace SharpBPP.Forms
 
         private void mapBox_GeometryDefined(IGeometry geometry)
         {
+            //hande draw point for Routing
+            if(_state == MapDrawingState.RouteChooseA)
+            {
+                dataProcessor._routeStartEnd[0] = (NetTopologySuite.Geometries.Point) geometry;
+                _state = MapDrawingState.RouteChooseB;
+                lblInfo.Text = "Please select end point...";
+                return;
+            }  else if (_state == MapDrawingState.RouteChooseB)
+            {
+                dataProcessor._routeStartEnd[1] = (NetTopologySuite.Geometries.Point)geometry;
+                lblInfo.Text = "";
+                mapBox.ActiveTool = MapBox.Tools.Pan;
+                _state = MapDrawingState.Default;
+
+                //remove previous route from Layers
+                var _existingRoute = mapBox.Map.Layers.Where(l => l.LayerName == "RouteAtoB").FirstOrDefault();
+                if (_existingRoute != null)
+                {
+                    _layerCollection.Remove(_existingRoute);
+                    mapBox.Map.Layers.Remove(_existingRoute);
+                    TreeNode _existingNode = null;
+
+                    foreach(TreeNode node in treeViewLayers.Nodes)
+                        if(node.Text == "RouteAtoB")
+                        {
+                            _existingNode = node;
+                            break;
+                        }
+
+                    if (_existingNode != null)
+                        treeViewLayers.Nodes.Remove(_existingNode);
+
+                    (_existingRoute as VectorLayer).Dispose();
+                }
+
+                //add new route layer
+                VectorLayer routeLayer = dataProcessor.CreateRouteLayer();
+                _layerCollection.Add(routeLayer);
+                mapBox.Map.Layers.Add(routeLayer);
+                var newNode = new TreeNode("RouteAtoB");
+                newNode.Checked = true;
+                treeViewLayers.Nodes.Insert(0, newNode);
+                mapBox.Refresh();
+                return;
+            }
+
             if (resultLayerCollection != null)
             {
                 resultLayerCollection.Clear();
@@ -651,6 +699,13 @@ namespace SharpBPP.Forms
         private void btnPolygon_Click(object sender, EventArgs e)
         {
             mapBox.ActiveTool = MapBox.Tools.DrawPolygon;
+        }
+
+        private void btnRoute_Click(object sender, EventArgs e)
+        {
+            mapBox.ActiveTool = MapBox.Tools.DrawPoint;
+            _state = MapDrawingState.RouteChooseA;   
+            lblInfo.Text = "Please select starting point...";
         }
     }
 }

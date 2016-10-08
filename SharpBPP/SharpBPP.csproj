@@ -148,6 +148,7 @@
   <ItemGroup>
     <Compile Include="DataAccess\DataProcessor.cs" />
     <Compile Include="DataAccess\FilterProcessor.cs" />
+    <Compile Include="Entities\Enums.cs" />
     <Compile Include="Entities\LayerRecord.cs" />
     <Compile Include="Forms\FormSelectCircleSize.cs">
       <SubType>Form</SubType>
