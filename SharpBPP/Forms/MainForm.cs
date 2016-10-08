@@ -39,6 +39,8 @@ namespace SharpBPP.Forms
         private LayerCollection resultLayerCollection;
         private FilterProcessor filterProcessor;
         private VectorLayer _tmpLayer;
+        private bool featureInfo;
+        private bool mouseClickActive;
 
         public MapBox Box
         {
@@ -53,7 +55,7 @@ namespace SharpBPP.Forms
             InitializeComponent();
             _connectionStrings = ConfigurationManager.ConnectionStrings;
             _appSettings = ConfigurationManager.AppSettings;
-
+            mouseClickActive = false;
             dataProcessor = new DataProcessor();
 
             PopulateMap();
@@ -112,6 +114,8 @@ namespace SharpBPP.Forms
         private void toolStripButtonPan_Click(object sender, EventArgs e)
         {
             mapBox.ActiveTool = MapBox.Tools.Pan;
+            mapBox.MouseClick -= mapBox_MouseClick;
+            mouseClickActive = false;
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -161,7 +165,7 @@ namespace SharpBPP.Forms
                 childNodes[i] = new TreeNode(_layerCollection[i].LayerName);
                 childNodes[i].Checked = true;
             }
-            
+
             treeViewLayers.Nodes.Clear();
             treeViewLayers.Nodes.AddRange(childNodes);
             treeViewLayers.TreeViewNodeSorter = new TreeViewNodeComparer(mapBox.Map.Layers);
@@ -278,7 +282,7 @@ namespace SharpBPP.Forms
                             newLabel.ReverseCoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);
                         }
 
-                        if(_tmpLayer != null && mapBox.Map.Layers.Contains(_tmpLayer))
+                        if (_tmpLayer != null && mapBox.Map.Layers.Contains(_tmpLayer))
                         {
                             mapBox.Map.Layers.Remove(_tmpLayer);
                             _tmpLayer.Dispose();
@@ -493,7 +497,7 @@ namespace SharpBPP.Forms
                         {
                             var baseLayer = _layerCollection.Where(l => l.LayerName == treeViewLayers.SelectedNode.Text).FirstOrDefault();
                             _tmpLayer = dataProcessor.CreateFilteredLayer(baseLayer as VectorLayer, selectedAttribute, filter, likeOperation);
-                            
+
                             mapBox.Map.Layers.Add(_tmpLayer);
                             _tmpLayer.CoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84, ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator);
                             _tmpLayer.ReverseCoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);
@@ -521,7 +525,7 @@ namespace SharpBPP.Forms
             {
                 if (node.Checked)
                 {
-                    VectorLayer selectedLayer = (VectorLayer) mapBox.Map.Layers.Where(l => l.LayerName == node.Text).FirstOrDefault();
+                    VectorLayer selectedLayer = (VectorLayer)mapBox.Map.Layers.Where(l => l.LayerName == node.Text).FirstOrDefault();
                     int maxIndex = mapBox.Map.Layers.Count - 1;
                     int currentIndex = mapBox.Map.Layers.IndexOf(selectedLayer);
 
@@ -585,10 +589,28 @@ namespace SharpBPP.Forms
 
         private void mapBox_MouseClick(object sender, MouseEventArgs e)
         {
+            if (featureInfo)
+            {
+                txtFeatureInfo.Text = GetFeatureInfo(e.Location);
+            }
+            else
+            {
+                CircleFiltering(e.Location);
+            }
+
+            mapBox.MouseClick -= mapBox_MouseClick;
+            mouseClickActive = false;
+        }
+
+        private string GetFeatureInfo(System.Drawing.Point location)
+        {
+            return new FilterProcessor(this, 1).GetFeatureInfo(location, mapBox.Map.Layers);
+        }
+
+        private void CircleFiltering(System.Drawing.Point location)
+        {
             if (filterProcessor == null)
                 return;
-
-            mapBox.ActiveTool = MapBox.Tools.None;
 
             if (resultLayerCollection != null)
             {
@@ -598,15 +620,13 @@ namespace SharpBPP.Forms
                     layer.Dispose();
                 }
             }
-            resultLayerCollection = filterProcessor.CrateResultLayerCollection(mapBox.Map.Layers, e.Location);
+            resultLayerCollection = filterProcessor.CrateResultLayerCollection(mapBox.Map.Layers, location);
 
             mapBox.Map.Layers.Clear();
             mapBox.Map.Layers.AddCollection(resultLayerCollection);
 
             mapBox.Refresh();
             mapBox.Invalidate();
-
-            mapBox.MouseClick -= mapBox_MouseClick;
         }
 
         private void btnDrawCircle_Click(object sender, EventArgs e)
@@ -621,8 +641,11 @@ namespace SharpBPP.Forms
                 }
                 filterProcessor = new FilterProcessor(this, fscs.CircleSize);
             }
-
-            mapBox.MouseClick += mapBox_MouseClick;
+            featureInfo = false;
+            if (!mouseClickActive)
+                mapBox.MouseClick += mapBox_MouseClick;
+            mouseClickActive = true;
+            mapBox.ActiveTool = MapBox.Tools.None;
         }
 
         private void mapBox_GeometryDefined(IGeometry geometry)
@@ -639,7 +662,7 @@ namespace SharpBPP.Forms
             }
             filterProcessor = new FilterProcessor(this);
 
-            resultLayerCollection =  filterProcessor.PolygonFiltering(mapBox.Map.Layers, geometry);
+            resultLayerCollection = filterProcessor.PolygonFiltering(mapBox.Map.Layers, geometry);
 
             mapBox.Map.Layers.Clear();
             mapBox.Map.Layers.AddCollection(resultLayerCollection);
@@ -651,6 +674,15 @@ namespace SharpBPP.Forms
         private void btnPolygon_Click(object sender, EventArgs e)
         {
             mapBox.ActiveTool = MapBox.Tools.DrawPolygon;
+        }
+
+        private void btnFeatureInfo_Click(object sender, EventArgs e)
+        {
+            featureInfo = true;
+            if (!mouseClickActive)
+                mapBox.MouseClick += mapBox_MouseClick;
+            mouseClickActive = true;
+            mapBox.ActiveTool = MapBox.Tools.None;
         }
     }
 }
