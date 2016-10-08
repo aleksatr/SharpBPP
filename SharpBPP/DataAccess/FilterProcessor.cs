@@ -165,8 +165,7 @@ namespace SharpBPP.DataAccess
 
                 LinearRing lr = new LinearRing(transformedCoordinates);
                 Polygon p = new Polygon(lr);
-
-                var y = geometries.Where(g => g.Within(p)).ToList();
+                
                 VectorLayer resultLayer = CreateResultLayer(layerOnMap, geometries.Where(g => g.Within(p)));
                 resultLayerCollection.Add(resultLayer);
             }
