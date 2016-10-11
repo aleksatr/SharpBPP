@@ -339,6 +339,12 @@ namespace SharpBPP.Forms
                     if (styleChooser.ShowDialog() == DialogResult.OK)
                         SetPointStyle(layer, styleChooser);
                 }
+                else if (dataProcessor.Layers.ContainsKey(layer) && dataProcessor.Layers[layer].Type.Contains("POLYGON"))
+                {
+                    styleChooser = new FormStyleChooser(layer.Style.Outline.Width);
+                    if (styleChooser.ShowDialog() == DialogResult.OK)
+                        SetPolygonStyle(layer, styleChooser);
+                }
                 else
                 {
                     styleChooser = new FormStyleChooser(layer.Style.Outline.Width);
@@ -606,7 +612,7 @@ namespace SharpBPP.Forms
 
         private string GetFeatureInfo(System.Drawing.Point location)
         {
-            return new FilterProcessor(this, 1).GetFeatureInfo(location, mapBox.Map.Layers);
+            return new FilterProcessor(this, 10).GetFeatureInfo(location, mapBox.Map.Layers);
         }
 
         private void CircleFiltering(System.Drawing.Point location)
@@ -738,6 +744,16 @@ namespace SharpBPP.Forms
             mapBox.ActiveTool = MapBox.Tools.DrawPoint;
             _state = MapDrawingState.RouteChooseA;   
             lblInfo.Text = "Please select starting point...";
+        }
+
+        private void btnGeomFilter_Click(object sender, EventArgs e)
+        {
+            FormGeomFilter fgf = new FormGeomFilter(mapBox.Map.Layers);
+            if (fgf.ShowDialog() == DialogResult.OK)
+            {
+                IList<IGeometry> geometries;
+               
+            }
         }
     }
 }

@@ -133,29 +133,16 @@ namespace SharpBPP.DataAccess
             return new TileLayer(new BruTile.Web.OsmTileSource(), "OSM");
         }
 
-        public LayerCollection CreateLayers()
+        public LayerCollection CreateLayers(List<LayerRecord> records = null)
         {
             LayerCollection tmpLayerCollection = new LayerCollection();
             Layers.Clear();
-            foreach(LayerRecord record in GetDefaultLayers())
-            {
-                VectorLayer layer = new VectorLayer(record.TableName);
-                Layers.Add(layer, record);
-                layer.DataSource = new SharpMap.Data.Providers.PostGIS(
-                connectionStrings["PostgreSQL"].ConnectionString, record.TableName, "gid");
-                tmpLayerCollection.Add(layer);
-            }
-            
-            return tmpLayerCollection;
-        }
-
-        public LayerCollection CreateLayers(List<LayerRecord> records)
-        {
-            LayerCollection tmpLayerCollection = new LayerCollection();
-
+            if (records == null)
+                records = GetDefaultLayers();
             foreach (LayerRecord record in records)
             {
                 VectorLayer layer = new VectorLayer(record.TableName);
+                Layers.Add(layer, record);
                 layer.DataSource = new SharpMap.Data.Providers.PostGIS(
                 connectionStrings["PostgreSQL"].ConnectionString, record.TableName, "gid");
                 tmpLayerCollection.Add(layer);

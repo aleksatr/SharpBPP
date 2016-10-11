@@ -150,6 +150,12 @@
     <Compile Include="DataAccess\FilterProcessor.cs" />
     <Compile Include="Entities\Enums.cs" />
     <Compile Include="Entities\LayerRecord.cs" />
+    <Compile Include="Forms\FormGeomFilter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormGeomFilter.Designer.cs">
+      <DependentUpon>FormGeomFilter.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormSelectCircleSize.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -195,6 +201,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\FormGeomFilter.resx">
+      <DependentUpon>FormGeomFilter.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormSelectCircleSize.resx">
       <DependentUpon>FormSelectCircleSize.cs</DependentUpon>
     </EmbeddedResource>
