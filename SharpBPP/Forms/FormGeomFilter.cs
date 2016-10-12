@@ -19,6 +19,8 @@ namespace SharpBPP.Forms
     {
         public IList<IGeometry> ResultGeometries { get; private set; }
         private LayerCollection layers;
+        private const string queryTemplate = @"select ll.{1} from {0} ll where ll.{1} in 
+                            (select l.{1} from {0} l, {4} s where {2} l.{1} = ll.{1} and ({6}(l.{3}, s.{5}) {7}));";
 
         public FormGeomFilter()
         {
@@ -50,20 +52,50 @@ namespace SharpBPP.Forms
         private void CalculateResultGeometry()
         {
             VectorLayer sourceLayer = layers.Where(x => x.LayerName == comboSource.SelectedItem.ToString()).First() as VectorLayer;
-            PostGIS postgis = sourceLayer.DataSource as PostGIS;
-            postgis.DefinitionQuery = GetAllLayers();
+            VectorLayer targetLayer = layers.Where(x => x.LayerName == comboTarget.SelectedItem.ToString()).First() as VectorLayer;
+            PostGIS postgisSource = sourceLayer.DataSource as PostGIS;
+            PostGIS postgisTarget = targetLayer.DataSource as PostGIS;
+            //  postgis.DefinitionQuery = GetAllLayers();
+            string operation = FilterOperation();
+            double? distance = null;
+            if (numericDistance.Visible)
+                distance = (double)numericDistance.Value;
+            string query = QueryBuilder(postgisSource.Table, postgisSource.ObjectIdColumn, postgisSource.DefinitionQuery,
+                postgisSource.GeometryColumn, postgisTarget.Table, postgisTarget.DefinitionQuery,
+                postgisTarget.GeometryColumn, operation, distance);
+            string whereArgs = GetWhereArgs(query, postgisSource.ObjectIdColumn);
 
+            postgisSource.DefinitionQuery = whereArgs;
+            
         }
 
-        public string GetAllLayers()
+        private string QueryBuilder(string sourceTable, string sourceIdColumn, string sourceWhereArgs, string sourceGeomColumn,
+            string targetTable, string targetWhereArgs, string targetGeomColumn,
+            string operation, double? distance)
+        {
+            string whereArgs = "";
+            string distanceString = "";
+            if (!string.IsNullOrEmpty(sourceWhereArgs) || !string.IsNullOrEmpty(targetWhereArgs))
+            {
+                whereArgs += sourceWhereArgs + " and " + targetWhereArgs;
+            }
+            if (distance.HasValue)
+            {
+                distanceString = " < " + distance.Value;
+            }
+            string s = string.Format(queryTemplate, sourceTable, sourceIdColumn, whereArgs,
+                sourceGeomColumn, targetTable, targetGeomColumn, operation, distanceString);
+            return s;
+        }
+
+        public string GetWhereArgs(string query, string idColumn)
         {
             string where = string.Empty;
             using (NpgsqlConnection conn = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["PostgreSQL"].ConnectionString))
             {
                 conn.Open();
 
-                using (NpgsqlCommand command = new NpgsqlCommand(@"select ll.gid from zone ll where ll.gid in 
-                            (select l.gid from zone l, stanice s where l.gid = ll.gid and (ST_Contains(l.geom, s.geom)));", conn))
+                using (NpgsqlCommand command = new NpgsqlCommand(query, conn))
                 {
 
                     NpgsqlDataReader reader = command.ExecuteReader();
@@ -71,7 +103,7 @@ namespace SharpBPP.Forms
                     {
                         if (where == string.Empty)
                         {
-                            where = "gid in ( ";
+                            where = idColumn + " in ( ";
                         }
 
                         where += reader[0] + ",";
@@ -102,6 +134,22 @@ namespace SharpBPP.Forms
                     return source.IsWithinDistance(target, (double)numericDistance.Value);
             }
             return false;
+        }
+
+        private string FilterOperation()
+        {
+            switch (comboOperation.SelectedIndex)
+            {
+                case 0:
+                    return "ST_Contains";
+                case 1:
+                    return "ST_Within";
+                case 2:
+                    return "ST_Intersects";
+                case 3:
+                    return "ST_Distance";
+            }
+            return string.Empty;
         }
 
         private void comboOperation_SelectedIndexChanged(object sender, EventArgs e)
