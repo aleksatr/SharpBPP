@@ -238,7 +238,7 @@ namespace SharpBPP.Forms
             }
             else if (checkedNodes.Count == 1)
             {
-                sb.Append(node.Parent.Tag.ToString() + " = '" + node.Text + "'");
+                sb.Append(node.Parent.Tag.ToString() + " = '" + checkedNodes.First().Text + "'");
             }
             else
             {
