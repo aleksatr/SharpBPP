@@ -29,8 +29,8 @@ namespace SharpBPP.DataAccess
         {
             this.parent = parent;
 
-            coordTrans = parent.Box.Map.Layers.Cast<VectorLayer>().First().CoordinateTransformation;
-            reversTrans = parent.Box.Map.Layers.Cast<VectorLayer>().First().ReverseCoordinateTransformation;
+            coordTrans = parent.transfCoord;
+            reversTrans = parent.reverseTransfCoord;
         }
         public FilterProcessor(MainForm parent, double circleSize)
             :this(parent)

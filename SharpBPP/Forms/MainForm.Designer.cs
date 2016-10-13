@@ -84,8 +84,8 @@
             this.fileToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
-            this.menuStrip.Size = new System.Drawing.Size(957, 24);
+            this.menuStrip.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
+            this.menuStrip.Size = new System.Drawing.Size(1276, 28);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "menuStrip1";
             // 
@@ -94,13 +94,13 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(44, 24);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(108, 26);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -114,17 +114,17 @@
             // toolStripContainer.ContentPanel
             // 
             this.toolStripContainer.ContentPanel.Controls.Add(this.splitContainer);
-            this.toolStripContainer.ContentPanel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(930, 515);
+            this.toolStripContainer.ContentPanel.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
+            this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1243, 641);
             this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             // 
             // toolStripContainer.LeftToolStripPanel
             // 
             this.toolStripContainer.LeftToolStripPanel.Controls.Add(this.toolStrip2);
-            this.toolStripContainer.Location = new System.Drawing.Point(0, 24);
-            this.toolStripContainer.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.toolStripContainer.Location = new System.Drawing.Point(0, 28);
+            this.toolStripContainer.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.toolStripContainer.Name = "toolStripContainer";
-            this.toolStripContainer.Size = new System.Drawing.Size(957, 562);
+            this.toolStripContainer.Size = new System.Drawing.Size(1276, 693);
             this.toolStripContainer.TabIndex = 1;
             this.toolStripContainer.Text = "toolStripContainer1";
             // 
@@ -141,26 +141,26 @@
             this.lblInfo});
             this.statusStrip.Location = new System.Drawing.Point(0, 0);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(957, 22);
+            this.statusStrip.Size = new System.Drawing.Size(1276, 25);
             this.statusStrip.TabIndex = 0;
             // 
             // lblCoordinate
             // 
             this.lblCoordinate.Name = "lblCoordinate";
-            this.lblCoordinate.Size = new System.Drawing.Size(79, 17);
+            this.lblCoordinate.Size = new System.Drawing.Size(100, 20);
             this.lblCoordinate.Text = "lblCoordinate";
             // 
             // lblInfo
             // 
             this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new System.Drawing.Size(22, 17);
+            this.lblInfo.Size = new System.Drawing.Size(29, 20);
             this.lblInfo.Text = "     ";
             // 
             // splitContainer
             // 
             this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer.Margin = new System.Windows.Forms.Padding(2);
+            this.splitContainer.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.splitContainer.Name = "splitContainer";
             // 
             // splitContainer.Panel1
@@ -170,9 +170,9 @@
             // splitContainer.Panel2
             // 
             this.splitContainer.Panel2.Controls.Add(this.mapBox);
-            this.splitContainer.Size = new System.Drawing.Size(930, 515);
-            this.splitContainer.SplitterDistance = 187;
-            this.splitContainer.SplitterWidth = 5;
+            this.splitContainer.Size = new System.Drawing.Size(1243, 641);
+            this.splitContainer.SplitterDistance = 249;
+            this.splitContainer.SplitterWidth = 7;
             this.splitContainer.TabIndex = 1;
             // 
             // tableLayoutPanelLeft
@@ -183,23 +183,23 @@
             this.tableLayoutPanelLeft.Controls.Add(this.txtFeatureInfo, 0, 1);
             this.tableLayoutPanelLeft.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanelLeft.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanelLeft.Margin = new System.Windows.Forms.Padding(5);
+            this.tableLayoutPanelLeft.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.tableLayoutPanelLeft.Name = "tableLayoutPanelLeft";
             this.tableLayoutPanelLeft.RowCount = 2;
             this.tableLayoutPanelLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanelLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanelLeft.Size = new System.Drawing.Size(187, 515);
+            this.tableLayoutPanelLeft.Size = new System.Drawing.Size(249, 641);
             this.tableLayoutPanelLeft.TabIndex = 0;
             // 
             // gbxLayers
             // 
             this.gbxLayers.Controls.Add(this.treeViewLayers);
             this.gbxLayers.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gbxLayers.Location = new System.Drawing.Point(5, 5);
-            this.gbxLayers.Margin = new System.Windows.Forms.Padding(5);
+            this.gbxLayers.Location = new System.Drawing.Point(7, 6);
+            this.gbxLayers.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.gbxLayers.Name = "gbxLayers";
-            this.gbxLayers.Padding = new System.Windows.Forms.Padding(5);
-            this.gbxLayers.Size = new System.Drawing.Size(177, 247);
+            this.gbxLayers.Padding = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.gbxLayers.Size = new System.Drawing.Size(235, 308);
             this.gbxLayers.TabIndex = 0;
             this.gbxLayers.TabStop = false;
             this.gbxLayers.Text = "Layers";
@@ -209,11 +209,11 @@
             this.treeViewLayers.CheckBoxes = true;
             this.treeViewLayers.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeViewLayers.FullRowSelect = true;
-            this.treeViewLayers.Location = new System.Drawing.Point(5, 18);
-            this.treeViewLayers.Margin = new System.Windows.Forms.Padding(5);
+            this.treeViewLayers.Location = new System.Drawing.Point(7, 21);
+            this.treeViewLayers.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.treeViewLayers.Name = "treeViewLayers";
             this.treeViewLayers.ShowNodeToolTips = true;
-            this.treeViewLayers.Size = new System.Drawing.Size(167, 224);
+            this.treeViewLayers.Size = new System.Drawing.Size(221, 281);
             this.treeViewLayers.TabIndex = 0;
             this.treeViewLayers.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeViewLayers_AfterCheck);
             // 
@@ -221,13 +221,13 @@
             // 
             this.txtFeatureInfo.AcceptsReturn = true;
             this.txtFeatureInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtFeatureInfo.Location = new System.Drawing.Point(2, 259);
-            this.txtFeatureInfo.Margin = new System.Windows.Forms.Padding(2);
+            this.txtFeatureInfo.Location = new System.Drawing.Point(3, 322);
+            this.txtFeatureInfo.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtFeatureInfo.Multiline = true;
             this.txtFeatureInfo.Name = "txtFeatureInfo";
             this.txtFeatureInfo.ReadOnly = true;
             this.txtFeatureInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtFeatureInfo.Size = new System.Drawing.Size(183, 254);
+            this.txtFeatureInfo.Size = new System.Drawing.Size(243, 317);
             this.txtFeatureInfo.TabIndex = 1;
             // 
             // mapBox
@@ -239,14 +239,14 @@
             this.mapBox.FineZoomFactor = 10D;
             this.mapBox.Location = new System.Drawing.Point(0, 0);
             this.mapBox.MapQueryMode = SharpMap.Forms.MapBox.MapQueryType.LayerByIndex;
-            this.mapBox.Margin = new System.Windows.Forms.Padding(2);
+            this.mapBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.mapBox.Name = "mapBox";
             this.mapBox.QueryGrowFactor = 5F;
             this.mapBox.QueryLayerIndex = 0;
             this.mapBox.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(244)))), ((int)(((byte)(244)))), ((int)(((byte)(244)))));
             this.mapBox.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(244)))), ((int)(((byte)(244)))));
             this.mapBox.ShowProgressUpdate = false;
-            this.mapBox.Size = new System.Drawing.Size(738, 515);
+            this.mapBox.Size = new System.Drawing.Size(987, 641);
             this.mapBox.TabIndex = 0;
             this.mapBox.Text = "mapBox1";
             this.mapBox.WheelZoomMagnitude = -2D;
@@ -262,7 +262,7 @@
             this.btnZDown});
             this.toolStrip2.Location = new System.Drawing.Point(0, 3);
             this.toolStrip2.Name = "toolStrip2";
-            this.toolStrip2.Size = new System.Drawing.Size(27, 55);
+            this.toolStrip2.Size = new System.Drawing.Size(33, 65);
             this.toolStrip2.TabIndex = 0;
             // 
             // btnZUp
@@ -271,7 +271,7 @@
             this.btnZUp.Image = ((System.Drawing.Image)(resources.GetObject("btnZUp.Image")));
             this.btnZUp.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnZUp.Name = "btnZUp";
-            this.btnZUp.Size = new System.Drawing.Size(25, 19);
+            this.btnZUp.Size = new System.Drawing.Size(31, 24);
             this.btnZUp.Text = "Z+";
             this.btnZUp.Click += new System.EventHandler(this.btnZUp_Click);
             // 
@@ -281,7 +281,7 @@
             this.btnZDown.Image = ((System.Drawing.Image)(resources.GetObject("btnZDown.Image")));
             this.btnZDown.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnZDown.Name = "btnZDown";
-            this.btnZDown.Size = new System.Drawing.Size(25, 19);
+            this.btnZDown.Size = new System.Drawing.Size(31, 24);
             this.btnZDown.Text = "Z-";
             this.btnZDown.Click += new System.EventHandler(this.btnZDown_Click);
             // 
@@ -291,8 +291,8 @@
             this.toolStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonNone,
-            this.btnPolygon,
             this.toolStripButtonPan,
+            this.btnPolygon,
             this.btnPostgreConnect,
             this.btnSetStyle,
             this.btnLabels,
@@ -306,7 +306,7 @@
             this.btnClear});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(954, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(1273, 27);
             this.toolStrip1.TabIndex = 0;
             // 
             // toolStripButtonNone
@@ -315,7 +315,7 @@
             this.toolStripButtonNone.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonNone.Image")));
             this.toolStripButtonNone.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonNone.Name = "toolStripButtonNone";
-            this.toolStripButtonNone.Size = new System.Drawing.Size(40, 22);
+            this.toolStripButtonNone.Size = new System.Drawing.Size(49, 24);
             this.toolStripButtonNone.Text = "None";
             this.toolStripButtonNone.Click += new System.EventHandler(this.toolStripButtonNone_ButtonClick);
             // 
@@ -325,7 +325,7 @@
             this.btnPolygon.Image = ((System.Drawing.Image)(resources.GetObject("btnPolygon.Image")));
             this.btnPolygon.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnPolygon.Name = "btnPolygon";
-            this.btnPolygon.Size = new System.Drawing.Size(55, 22);
+            this.btnPolygon.Size = new System.Drawing.Size(66, 24);
             this.btnPolygon.Text = "Polygon";
             this.btnPolygon.Click += new System.EventHandler(this.btnPolygon_Click);
             // 
@@ -335,7 +335,7 @@
             this.toolStripButtonPan.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonPan.Image")));
             this.toolStripButtonPan.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonPan.Name = "toolStripButtonPan";
-            this.toolStripButtonPan.Size = new System.Drawing.Size(31, 22);
+            this.toolStripButtonPan.Size = new System.Drawing.Size(36, 24);
             this.toolStripButtonPan.Text = "Pan";
             this.toolStripButtonPan.Click += new System.EventHandler(this.toolStripButtonPan_Click);
             // 
@@ -345,7 +345,7 @@
             this.btnPostgreConnect.Image = ((System.Drawing.Image)(resources.GetObject("btnPostgreConnect.Image")));
             this.btnPostgreConnect.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnPostgreConnect.Name = "btnPostgreConnect";
-            this.btnPostgreConnect.Size = new System.Drawing.Size(84, 22);
+            this.btnPostgreConnect.Size = new System.Drawing.Size(104, 24);
             this.btnPostgreConnect.Text = "PostGIS layers";
             this.btnPostgreConnect.Click += new System.EventHandler(this.btnPostgreConnect_Click);
             // 
@@ -355,7 +355,7 @@
             this.btnSetStyle.Image = ((System.Drawing.Image)(resources.GetObject("btnSetStyle.Image")));
             this.btnSetStyle.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSetStyle.Name = "btnSetStyle";
-            this.btnSetStyle.Size = new System.Drawing.Size(86, 22);
+            this.btnSetStyle.Size = new System.Drawing.Size(109, 24);
             this.btnSetStyle.Text = "Set Layer Style";
             this.btnSetStyle.Click += new System.EventHandler(this.btnSetStyle_Click);
             // 
@@ -365,7 +365,7 @@
             this.btnLabels.Image = ((System.Drawing.Image)(resources.GetObject("btnLabels.Image")));
             this.btnLabels.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnLabels.Name = "btnLabels";
-            this.btnLabels.Size = new System.Drawing.Size(75, 22);
+            this.btnLabels.Size = new System.Drawing.Size(94, 24);
             this.btnLabels.Text = "Layer Labels";
             this.btnLabels.Click += new System.EventHandler(this.btnLabels_Click);
             // 
@@ -375,7 +375,7 @@
             this.btnToggleBackground.Image = ((System.Drawing.Image)(resources.GetObject("btnToggleBackground.Image")));
             this.btnToggleBackground.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnToggleBackground.Name = "btnToggleBackground";
-            this.btnToggleBackground.Size = new System.Drawing.Size(114, 22);
+            this.btnToggleBackground.Size = new System.Drawing.Size(142, 24);
             this.btnToggleBackground.Text = "Toggle Background";
             this.btnToggleBackground.Click += new System.EventHandler(this.btnToggleBackground_Click);
             // 
@@ -385,7 +385,7 @@
             this.btnCreateSubnodes.Image = ((System.Drawing.Image)(resources.GetObject("btnCreateSubnodes.Image")));
             this.btnCreateSubnodes.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnCreateSubnodes.Name = "btnCreateSubnodes";
-            this.btnCreateSubnodes.Size = new System.Drawing.Size(122, 22);
+            this.btnCreateSubnodes.Size = new System.Drawing.Size(154, 24);
             this.btnCreateSubnodes.Text = "Create Subcategories";
             this.btnCreateSubnodes.Click += new System.EventHandler(this.btnCreateSubnodes_Click);
             // 
@@ -395,7 +395,7 @@
             this.btnFilterLayer.Image = ((System.Drawing.Image)(resources.GetObject("btnFilterLayer.Image")));
             this.btnFilterLayer.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnFilterLayer.Name = "btnFilterLayer";
-            this.btnFilterLayer.Size = new System.Drawing.Size(68, 22);
+            this.btnFilterLayer.Size = new System.Drawing.Size(85, 24);
             this.btnFilterLayer.Text = "Filter Layer";
             this.btnFilterLayer.Click += new System.EventHandler(this.btnFilterLayer_Click);
             // 
@@ -405,7 +405,7 @@
             this.btnDrawCircle.Image = ((System.Drawing.Image)(resources.GetObject("btnDrawCircle.Image")));
             this.btnDrawCircle.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnDrawCircle.Name = "btnDrawCircle";
-            this.btnDrawCircle.Size = new System.Drawing.Size(71, 22);
+            this.btnDrawCircle.Size = new System.Drawing.Size(89, 24);
             this.btnDrawCircle.Text = "Draw Circle";
             this.btnDrawCircle.Click += new System.EventHandler(this.btnDrawCircle_Click);
             // 
@@ -415,7 +415,7 @@
             this.btnRoute.Image = ((System.Drawing.Image)(resources.GetObject("btnRoute.Image")));
             this.btnRoute.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnRoute.Name = "btnRoute";
-            this.btnRoute.Size = new System.Drawing.Size(42, 22);
+            this.btnRoute.Size = new System.Drawing.Size(52, 24);
             this.btnRoute.Text = "Route";
             this.btnRoute.Click += new System.EventHandler(this.btnRoute_Click);
             // 
@@ -425,7 +425,7 @@
             this.btnFeatureInfo.Image = ((System.Drawing.Image)(resources.GetObject("btnFeatureInfo.Image")));
             this.btnFeatureInfo.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnFeatureInfo.Name = "btnFeatureInfo";
-            this.btnFeatureInfo.Size = new System.Drawing.Size(74, 22);
+            this.btnFeatureInfo.Size = new System.Drawing.Size(92, 24);
             this.btnFeatureInfo.Text = "Feature Info";
             this.btnFeatureInfo.Click += new System.EventHandler(this.btnFeatureInfo_Click);
             // 
@@ -435,7 +435,7 @@
             this.btnGeomFilter.Image = ((System.Drawing.Image)(resources.GetObject("btnGeomFilter.Image")));
             this.btnGeomFilter.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnGeomFilter.Name = "btnGeomFilter";
-            this.btnGeomFilter.Size = new System.Drawing.Size(92, 19);
+            this.btnGeomFilter.Size = new System.Drawing.Size(115, 24);
             this.btnGeomFilter.Text = "Geometry Filter";
             this.btnGeomFilter.Click += new System.EventHandler(this.btnGeomFilter_Click);
             // 
@@ -445,19 +445,19 @@
             this.btnClear.Image = ((System.Drawing.Image)(resources.GetObject("btnClear.Image")));
             this.btnClear.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(89, 19);
+            this.btnClear.Size = new System.Drawing.Size(112, 24);
             this.btnClear.Text = "Clear Selection";
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(957, 586);
+            this.ClientSize = new System.Drawing.Size(1276, 721);
             this.Controls.Add(this.toolStripContainer);
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "MainForm";
             this.Text = "SharpBPP";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;

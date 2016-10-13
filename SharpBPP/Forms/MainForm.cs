@@ -24,6 +24,7 @@ using SharpMap.Data;
 using System.Collections.ObjectModel;
 using SharpMap.Data.Providers;
 using GeoAPI.Geometries;
+using System.Collections;
 
 namespace SharpBPP.Forms
 {
@@ -42,6 +43,8 @@ namespace SharpBPP.Forms
         private MapDrawingState _state;
         private bool featureInfo;
         private bool mouseClickActive;
+        public ICoordinateTransformation transfCoord;
+        public ICoordinateTransformation reverseTransfCoord;
 
         public MapBox Box
         {
@@ -60,7 +63,34 @@ namespace SharpBPP.Forms
             dataProcessor = new DataProcessor();
             _state = MapDrawingState.Default;
 
+            transfCoord = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84, ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator);
+            reverseTransfCoord = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);
+
+            IEnumerator enumerator = toolStrip1.Items.GetEnumerator();
+
+            while (enumerator.MoveNext())
+            {
+                ToolStripButton button = enumerator.Current as ToolStripButton;
+                if (button == null)
+                    continue;
+                button.Click += SelectCurrentButton;
+            } 
+
             PopulateMap();
+        }
+
+        private void SelectCurrentButton(object sender, EventArgs e)
+        {
+            IEnumerator enumerator = toolStrip1.Items.GetEnumerator();
+
+            while (enumerator.MoveNext())
+            {
+                ToolStripButton button = enumerator.Current as ToolStripButton;
+                if (button == null)
+                    continue;
+                
+                button.Checked = sender == button;
+            }
         }
 
         private void PopulateMap(LayerCollection layersToUse = null)
@@ -83,14 +113,14 @@ namespace SharpBPP.Forms
 
             foreach (VectorLayer layer in _layerCollection)
             {
-                layer.CoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84, ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator);
-                layer.ReverseCoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);
+                layer.CoordinateTransformation = transfCoord;//_ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84, ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator);
+                layer.ReverseCoordinateTransformation = reverseTransfCoord;//_ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);
             }
 
             foreach (LabelLayer label in _labelLayers)
             {
-                label.CoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84, ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator);
-                label.ReverseCoordinateTransformation = _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);
+                label.CoordinateTransformation = transfCoord;// _ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84, ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator);
+                label.ReverseCoordinateTransformation = reverseTransfCoord; //_ctFact.CreateFromCoordinateSystems(ProjNet.CoordinateSystems.ProjectedCoordinateSystem.WebMercator, ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84);
             }
 
             if (_layerCollection.Count > 0)
@@ -99,7 +129,13 @@ namespace SharpBPP.Forms
             mapBox.Refresh();
 
             if (_showBackgroundLayer)
+            {
                 mapBox.Map.BackgroundLayer.Add(dataProcessor.CreateBackgroundLayer());
+                //var b = dataProcessor.CreateBackgroundLayer();
+                //mapBox.Map.Layers.Add(b);
+                //_layerCollection.Add(b);
+            }
+                
 
             //populate treeView
             PopulateTreeView();
@@ -533,7 +569,7 @@ namespace SharpBPP.Forms
             {
                 if (node.Checked)
                 {
-                    VectorLayer selectedLayer = (VectorLayer)mapBox.Map.Layers.Where(l => l.LayerName == node.Text).FirstOrDefault();
+                    ILayer selectedLayer = mapBox.Map.Layers.Where(l => l.LayerName == node.Text).FirstOrDefault();
                     int maxIndex = mapBox.Map.Layers.Count - 1;
                     int currentIndex = mapBox.Map.Layers.IndexOf(selectedLayer);
 
@@ -566,7 +602,7 @@ namespace SharpBPP.Forms
             {
                 if (node.Checked)
                 {
-                    VectorLayer selectedLayer = (VectorLayer)mapBox.Map.Layers.Where(l => l.LayerName == node.Text).FirstOrDefault();
+                    ILayer selectedLayer = mapBox.Map.Layers.Where(l => l.LayerName == node.Text).FirstOrDefault();
                     int currentIndex = mapBox.Map.Layers.IndexOf(selectedLayer);
 
                     if (currentIndex > 0)
@@ -691,8 +727,8 @@ namespace SharpBPP.Forms
 
                     if (_existingNode != null)
                         treeViewLayers.Nodes.Remove(_existingNode);
-
-                    (_existingRoute as VectorLayer).Dispose();
+                    
+                    (_existingRoute as IDisposable).Dispose();
                 }
 
                 //add new route layer
