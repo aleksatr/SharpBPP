@@ -19,7 +19,7 @@ namespace SharpBPP.DataAccess
     public class FilterProcessor : IDisposable
     {
         private MainForm parent;
-        private int circleSize;
+        private double circleSize;
         private VectorLayer layer;
         private IGeometry geometry;
         private ICoordinateTransformation coordTrans;
@@ -32,7 +32,7 @@ namespace SharpBPP.DataAccess
             coordTrans = parent.Box.Map.Layers.Cast<VectorLayer>().First().CoordinateTransformation;
             reversTrans = parent.Box.Map.Layers.Cast<VectorLayer>().First().ReverseCoordinateTransformation;
         }
-        public FilterProcessor(MainForm parent, int circleSize)
+        public FilterProcessor(MainForm parent, double circleSize)
             :this(parent)
         {            
             this.circleSize = circleSize;
