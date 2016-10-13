@@ -613,7 +613,7 @@ namespace SharpBPP.Forms
 
         private string GetFeatureInfo(System.Drawing.Point location)
         {
-            return new FilterProcessor(this, mapBox.Map.Zoom/300.0).GetFeatureInfo(location, mapBox.Map.Layers);
+            return new FilterProcessor(this, mapBox.Map.Zoom/100.0).GetFeatureInfo(location, mapBox.Map.Layers);
         }
 
         private void CircleFiltering(System.Drawing.Point location)
