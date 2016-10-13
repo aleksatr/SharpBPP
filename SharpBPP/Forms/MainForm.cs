@@ -487,7 +487,7 @@ namespace SharpBPP.Forms
                                 childNodes[i].Tag = distinctCategories[i];
                                 childNodes[i].Checked = true;
                             }
-
+                            childNodes = childNodes.OrderByDescending(x => x.Text).ToArray();
                             node.Nodes.AddRange(childNodes);
                             node.Tag = selectedAttribute;
 

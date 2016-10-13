@@ -174,7 +174,7 @@ namespace SharpBPP.DataAccess
             var postGisProvider = new SharpMap.Data.Providers.PostGIS(connectionStrings["PostgreSQL"].ConnectionString, baseLayer.LayerName, "gid");
 
             if (useLikeOperation)
-                postGisProvider.DefinitionQuery = "cast(" + column + " as text) like '%" + filter + "%'";
+                postGisProvider.DefinitionQuery = "cast(" + column + " as text) ilike '%" + filter + "%'";
             else
                 postGisProvider.DefinitionQuery = "cast(" + column + " as text) = '" + filter + "'";
 
