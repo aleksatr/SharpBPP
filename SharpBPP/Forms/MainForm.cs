@@ -238,7 +238,7 @@ namespace SharpBPP.Forms
             }
             else if (checkedNodes.Count == 1)
             {
-                sb.Append(node.Parent.Tag.ToString() + " = '" + node.Text + "'");
+                sb.Append(node.Parent.Tag.ToString() + " = '" + checkedNodes.First().Text + "'");
             }
             else
             {
@@ -600,6 +600,7 @@ namespace SharpBPP.Forms
             if (featureInfo)
             {
                 txtFeatureInfo.Text = GetFeatureInfo(e.Location);
+                btnFeatureInfo.Checked = false;
             }
             else
             {
@@ -612,7 +613,7 @@ namespace SharpBPP.Forms
 
         private string GetFeatureInfo(System.Drawing.Point location)
         {
-            return new FilterProcessor(this, 10).GetFeatureInfo(location, mapBox.Map.Layers);
+            return new FilterProcessor(this, mapBox.Map.Zoom/300.0).GetFeatureInfo(location, mapBox.Map.Layers);
         }
 
         private void CircleFiltering(System.Drawing.Point location)
@@ -671,6 +672,7 @@ namespace SharpBPP.Forms
                 lblInfo.Text = "";
                 mapBox.ActiveTool = MapBox.Tools.Pan;
                 _state = MapDrawingState.Default;
+                btnRoute.Checked = false;
 
                 //remove previous route from Layers
                 var _existingRoute = mapBox.Map.Layers.Where(l => l.LayerName == "RouteAtoB").FirstOrDefault();
@@ -733,6 +735,7 @@ namespace SharpBPP.Forms
         private void btnFeatureInfo_Click(object sender, EventArgs e)
         {
             featureInfo = true;
+            btnFeatureInfo.Checked = true;
             if (!mouseClickActive)
                 mapBox.MouseClick += mapBox_MouseClick;
             mouseClickActive = true;
@@ -742,6 +745,7 @@ namespace SharpBPP.Forms
         private void btnRoute_Click(object sender, EventArgs e)
         {
             mapBox.ActiveTool = MapBox.Tools.DrawPoint;
+            btnRoute.Checked = true;
             _state = MapDrawingState.RouteChooseA;   
             lblInfo.Text = "Please select starting point...";
         }
