@@ -792,6 +792,8 @@ namespace SharpBPP.Forms
             DisposeObject(_labelLayers);
             DisposeObject(_layerCollection);
 
+            txtFeatureInfo.Clear();
+
             PopulateMap(dataProcessor.CreateLayers(layers));
         }
     }
