@@ -59,6 +59,7 @@
             this.btnRoute = new System.Windows.Forms.ToolStripButton();
             this.btnFeatureInfo = new System.Windows.Forms.ToolStripButton();
             this.btnGeomFilter = new System.Windows.Forms.ToolStripButton();
+            this.btnClear = new System.Windows.Forms.ToolStripButton();
             this.menuStrip.SuspendLayout();
             this.toolStripContainer.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
@@ -159,7 +160,7 @@
             // 
             this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.splitContainer.Margin = new System.Windows.Forms.Padding(2);
             this.splitContainer.Name = "splitContainer";
             // 
             // splitContainer.Panel1
@@ -182,7 +183,7 @@
             this.tableLayoutPanelLeft.Controls.Add(this.txtFeatureInfo, 0, 1);
             this.tableLayoutPanelLeft.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanelLeft.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanelLeft.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.tableLayoutPanelLeft.Margin = new System.Windows.Forms.Padding(5);
             this.tableLayoutPanelLeft.Name = "tableLayoutPanelLeft";
             this.tableLayoutPanelLeft.RowCount = 2;
             this.tableLayoutPanelLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -195,9 +196,9 @@
             this.gbxLayers.Controls.Add(this.treeViewLayers);
             this.gbxLayers.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbxLayers.Location = new System.Drawing.Point(5, 5);
-            this.gbxLayers.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.gbxLayers.Margin = new System.Windows.Forms.Padding(5);
             this.gbxLayers.Name = "gbxLayers";
-            this.gbxLayers.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.gbxLayers.Padding = new System.Windows.Forms.Padding(5);
             this.gbxLayers.Size = new System.Drawing.Size(177, 247);
             this.gbxLayers.TabIndex = 0;
             this.gbxLayers.TabStop = false;
@@ -209,7 +210,7 @@
             this.treeViewLayers.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeViewLayers.FullRowSelect = true;
             this.treeViewLayers.Location = new System.Drawing.Point(5, 18);
-            this.treeViewLayers.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.treeViewLayers.Margin = new System.Windows.Forms.Padding(5);
             this.treeViewLayers.Name = "treeViewLayers";
             this.treeViewLayers.ShowNodeToolTips = true;
             this.treeViewLayers.Size = new System.Drawing.Size(167, 224);
@@ -221,7 +222,7 @@
             this.txtFeatureInfo.AcceptsReturn = true;
             this.txtFeatureInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtFeatureInfo.Location = new System.Drawing.Point(2, 259);
-            this.txtFeatureInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtFeatureInfo.Margin = new System.Windows.Forms.Padding(2);
             this.txtFeatureInfo.Multiline = true;
             this.txtFeatureInfo.Name = "txtFeatureInfo";
             this.txtFeatureInfo.ReadOnly = true;
@@ -238,7 +239,7 @@
             this.mapBox.FineZoomFactor = 10D;
             this.mapBox.Location = new System.Drawing.Point(0, 0);
             this.mapBox.MapQueryMode = SharpMap.Forms.MapBox.MapQueryType.LayerByIndex;
-            this.mapBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.mapBox.Margin = new System.Windows.Forms.Padding(2);
             this.mapBox.Name = "mapBox";
             this.mapBox.QueryGrowFactor = 5F;
             this.mapBox.QueryLayerIndex = 0;
@@ -301,7 +302,8 @@
             this.btnDrawCircle,
             this.btnRoute,
             this.btnFeatureInfo,
-            this.btnGeomFilter});
+            this.btnGeomFilter,
+            this.btnClear});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(954, 25);
@@ -437,6 +439,16 @@
             this.btnGeomFilter.Text = "Geometry Filter";
             this.btnGeomFilter.Click += new System.EventHandler(this.btnGeomFilter_Click);
             // 
+            // btnClear
+            // 
+            this.btnClear.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.btnClear.Image = ((System.Drawing.Image)(resources.GetObject("btnClear.Image")));
+            this.btnClear.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(89, 19);
+            this.btnClear.Text = "Clear Selection";
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -445,7 +457,7 @@
             this.Controls.Add(this.toolStripContainer);
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MainForm";
             this.Text = "SharpBPP";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
@@ -510,5 +522,6 @@
         private System.Windows.Forms.ToolStripButton btnFeatureInfo;
         private System.Windows.Forms.TextBox txtFeatureInfo;
         private System.Windows.Forms.ToolStripButton btnGeomFilter;
+        private System.Windows.Forms.ToolStripButton btnClear;
     }
 }

@@ -751,9 +751,44 @@ namespace SharpBPP.Forms
             FormGeomFilter fgf = new FormGeomFilter(mapBox.Map.Layers);
             if (fgf.ShowDialog() == DialogResult.OK)
             {
-                IList<IGeometry> geometries;
-               
+                mapBox.Refresh();
+                mapBox.Invalidate();               
             }
+        }
+        private void DisposeObject(IDisposable obj)
+        {
+            if (obj != null)
+            {
+                obj.Dispose();
+                obj = null;
+            }
+        }
+
+        private void DisposeObject<T>(IEnumerable<T> t)
+        {
+            if (t != null)
+            {
+                t.ToList().ForEach(x => DisposeObject(x as IDisposable));
+            }
+            IList<T> l = t as IList<T>;
+            if (l != null)
+            {
+                l.Clear();
+            }
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            List<LayerRecord> layers = dataProcessor.Layers.Values.ToList();
+
+            DisposeObject(_tmpLayer);
+            DisposeObject(filterProcessor);
+            dataProcessor = new DataProcessor();
+            DisposeObject(resultLayerCollection);
+            DisposeObject(_labelLayers);
+            DisposeObject(_layerCollection);
+
+            PopulateMap(dataProcessor.CreateLayers(layers));
         }
     }
 }

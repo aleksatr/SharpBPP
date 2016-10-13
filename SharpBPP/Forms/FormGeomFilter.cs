@@ -19,8 +19,10 @@ namespace SharpBPP.Forms
     {
         public IList<IGeometry> ResultGeometries { get; private set; }
         private LayerCollection layers;
-        private const string queryTemplate = @"select ll.{1} from {0} ll where ll.{1} in 
-                            (select l.{1} from {0} l, {4} s where {2} l.{1} = ll.{1} and ({6}(l.{3}, s.{5}) {7}));";
+        private const string transform = "ST_Transform";
+        private const string serbianProjection = ", 31277";
+        private const string queryTemplate = @"select source.{1} from {0} source where source.{1} in 
+                            (select s.{1} from {0} s, {4} t where {2} s.{1} = source.{1} and ({6}( {8}(s.{3} {9}), ( {8}(t.{5} {9}))) {7}));";
 
         public FormGeomFilter()
         {
@@ -57,34 +59,57 @@ namespace SharpBPP.Forms
             PostGIS postgisTarget = targetLayer.DataSource as PostGIS;
             //  postgis.DefinitionQuery = GetAllLayers();
             string operation = FilterOperation();
+            string trans = "", proj = "";
             double? distance = null;
             if (numericDistance.Visible)
+            {
                 distance = (double)numericDistance.Value;
+                trans = transform;
+                proj = serbianProjection;
+            }
             string query = QueryBuilder(postgisSource.Table, postgisSource.ObjectIdColumn, postgisSource.DefinitionQuery,
                 postgisSource.GeometryColumn, postgisTarget.Table, postgisTarget.DefinitionQuery,
-                postgisTarget.GeometryColumn, operation, distance);
+                postgisTarget.GeometryColumn, operation, distance, trans, proj);
             string whereArgs = GetWhereArgs(query, postgisSource.ObjectIdColumn);
 
             postgisSource.DefinitionQuery = whereArgs;
             
         }
 
+        private void CheckIfAlreadyFiltered(VectorLayer layer)
+        {
+            PostGIS postgis = layer.DataSource as PostGIS;
+
+            //if (!string.IsNullOrEmpty(postgis.DefinitionQuery))
+            //{
+            //    postgis.DefinitionQuery
+            //}
+        }
+
         private string QueryBuilder(string sourceTable, string sourceIdColumn, string sourceWhereArgs, string sourceGeomColumn,
             string targetTable, string targetWhereArgs, string targetGeomColumn,
-            string operation, double? distance)
+            string operation, double? distance, string trans, string proj)
         {
             string whereArgs = "";
             string distanceString = "";
             if (!string.IsNullOrEmpty(sourceWhereArgs) || !string.IsNullOrEmpty(targetWhereArgs))
             {
-                whereArgs += sourceWhereArgs + " and " + targetWhereArgs;
+                if (!string.IsNullOrEmpty(sourceWhereArgs))
+                {
+                    sourceWhereArgs = "s." + sourceWhereArgs.Trim() + " and ";
+                }
+                if (!string.IsNullOrEmpty(targetWhereArgs))
+                {
+                    targetWhereArgs = "t." + targetWhereArgs.Trim() + " and ";
+                }
+                whereArgs += sourceWhereArgs  + targetWhereArgs;
             }
             if (distance.HasValue)
             {
                 distanceString = " < " + distance.Value;
             }
             string s = string.Format(queryTemplate, sourceTable, sourceIdColumn, whereArgs,
-                sourceGeomColumn, targetTable, targetGeomColumn, operation, distanceString);
+                sourceGeomColumn, targetTable, targetGeomColumn, operation, distanceString, trans, proj);
             return s;
         }
 
@@ -113,6 +138,10 @@ namespace SharpBPP.Forms
                     {
                         where = where.Remove(where.Length - 1);
                         where += ")";
+                    }
+                    else
+                    {
+                        where = "true = false";
                     }
                 }
             }
